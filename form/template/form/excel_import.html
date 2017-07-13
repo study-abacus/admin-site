@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Excel Import</title>
+	</head>
+	<body>
+		<table border="1">
+			<thead>
+				<tr>
+					{% for field in iterator %}
+						<th>{{field.name}}</th>
+					{% endfor %}
+					<th>Courses</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for student in students %}
+				<tr>
+					{% for value in student %}
+						<td>
+						{% if value != None %}
+							{{ value|upper }}
+						{% endif %}
+						</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</body>
+</html>

@@ -1,0 +1,77 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+
+<body>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#search").keyup(function(){
+				var value = $(this).val();
+				if (value != ""){
+					$.post("/form/get/", {
+						'csrfmiddlewaretoken': '{{ csrf_token }}',
+						'query' : encodeURIComponent(value)
+					}, function(data){
+						$("#dyn").html("");
+						$.each(data, function(i, item){
+							$("#dyn").append("<a href='student/" + item.pk + "' class='collection-item'>" + item.pk + " - " + item.fields.name + "</a>");
+						});
+
+					}, "json").fail(function(){
+						Materialize.toast("Error !", 1000);
+					});
+				}
+			});
+		});
+	</script>
+
+	{% include 'form/navigation.html' %}
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col s12 m6">
+				<blockquote><h3> Home </h3></blockquote>
+			</div>
+		</div>	
+
+		<div class="row">
+			<div class="col s12 m6">
+				<div class="card grey lighten-4">
+					<div class="card-content">
+						<span class="card-title">Number of Students</span>
+						<center>
+							<p><h4>
+								{{ stu_cnt }}
+							</h4></p>
+						</center>
+					</div>
+				</div>
+			</div>
+			<div class="col s12 m6">
+				<div class="card grey lighten-4">
+					<div class="card-content">
+
+						<span class="card-title">Quick Search</span>
+
+						<div class="input-field">
+							<input type="text" name="search" id="search">
+							<label for="search">Type Name or Student ID</label>
+						</div>
+
+						<div class="collection" id="dyn">
+							{% for student in students%}
+								<a href="student/{{ student.student_id }}" class="collection-item">{{ student.student_id }} - {{ student.name|upper }}</a>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+{% endblock %}

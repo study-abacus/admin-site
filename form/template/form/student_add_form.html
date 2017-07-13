@@ -1,0 +1,112 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+
+<body>
+
+	<script type="text/javascript">
+		function isIdAvaialable(x){
+			if (x != ""){
+				$.post(
+					"/form/isIdAvailable",
+					{
+						'csrfmiddlewaretoken' : '{{ csrf_token }}',
+						'id' : x
+					},
+					function(data, status){
+						if (data == "False"){
+							Materialize.toast("ID is already registered", 1500);
+						} else if (data == "Error"){
+							cosole.log("Error Occured");
+						}
+					}
+				);
+			}
+		}
+	</script>
+
+	{% include 'form/navigation.html' %}
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col s12 m6">
+				<blockquote>
+					<h4>Add Student</h4>			
+				</blockquote>
+			</div>
+			{% if success %}
+			<script type="text/javascript">
+				$(document).ready(function(){
+					Materialize.toast("Added Successfully", 5000);
+				});
+			</script>
+			{% endif %}
+			{% if form.errors %}
+				<div class="col s12 m6">
+					<div class="card-panel red lighten-2 white-text">
+						<ul>
+							{% for key, value in form.errors.items %} 
+								<li> <b>{{ key|escape }}</b> : {{ value|escape }}</li>
+							{% endfor %}
+						</ul>	
+					</div>
+				</div>
+			{% endif %}
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('select').material_select();
+				$('.datepicker').pickadate({
+					selectMonths: true, // Creates a dropdown to control month
+					selectYears: 15 // Creates a dropdown of 15 years to control year
+				});
+			});
+		</script>
+
+		<form action="" method="POST">
+
+			{% csrf_token %}
+			<div class="row">
+				{% for f in form %}
+
+					{% if f.name == "doe" or f.name == "dob" %}
+
+					<div class="input-field col s12 m6 l4">
+						<input type="date" class="datepicker" name="{{ f.name }}" id="{{ f.id_for_label }}">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					</div>
+
+					{% elif f.name == "student_id" %}
+
+					<div class="input-field col s12 m6 l4">
+						<input type="number" name="{{ f.name }}" id="{{ f.id_for_label }}" onkeyup="isIdAvaialable(this.value)">
+						<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+					</div>
+
+					{% else %}
+
+					<div class="input-field col s12 m6 l4">
+						{{ f }}
+						<label for="{{ f.id_for_label }}">{{f.label}}</label>
+					</div>
+
+					{% endif %}
+
+				{% endfor %}
+			</div>
+			<div class="row">
+				<div class="col s12 m6">
+					<button type="submit" name="submit" class="waves-effect waves-light btn green">
+						Submit
+					</button>					
+				</div>
+			</div>
+		</form>
+
+	</div>
+
+</body>
+
+{% endblock %}

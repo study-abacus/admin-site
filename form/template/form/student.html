@@ -1,0 +1,436 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+
+<body>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('select').material_select();
+			{% if success %}
+				Materialize.toast("Updated !", 2000);
+			{% endif%}
+			$('.modal').modal();
+		});
+
+		function editCoursePopUp(id){
+			if (typeof(id) != typeof(1)){
+				Materialize.toast("Error !", 1500);
+				return false;
+			}
+			if (! window.focus) return true;
+			var href = "/form/edit_course/"+id; //link 
+			var win = window.open(href, "Edit Popup", 'width=600,height=300, left=250,scrollbars=yes');
+			win.onload = function() {
+				win.onbeforeunload = function(){
+					location.reload(true); //will refresh page after popup close
+				}
+			}
+			return false;
+		}
+
+		function updateLevel(x, id){
+			$.post("/form/updateLevel", {
+				'csrfmiddlewaretoken' : '{{ csrf_token }}',
+				'to_do' : x,
+				'course_id' : id
+			}, function(data){
+				if (data.error == ""){
+					$("#course_name"+id).text(data.course);
+					Materialize.toast("Updated", 1000);
+				} else {
+					Materialize.toast(data.error, 1000);
+				}
+			}, "json").fail(function(){
+				Materialize.toast("Error Occured", 1000);
+			});
+		}
+
+		function formatDate(date) {
+			var monthNames = [
+				"January", "February", "March",
+				"April", "May", "June", "July",
+				"August", "September", "October",
+				"November", "December"
+			];
+
+			var day = date.getDate();
+			var monthIndex = date.getMonth();
+			var year = date.getFullYear();
+
+			return monthNames[monthIndex] + ' ' + day + ', ' + year;
+		}
+
+		function addFee(){
+			var $input = $('#fee_form :input');
+			var args = {};
+
+			$input.each(function(){
+				args[this.name] = $(this).val();
+			});
+			$.post("/form/addFee", args, function(data){
+				if (!data.error){
+					var html = `
+						<tr>
+							<td>` + formatDate(new Date(data[0].fields.date)) + `</td>
+							<td>Rs.` + data[0].fields.amount + `</td>
+							<td>` + data[0].fields.remarks + `</td>
+							<td><a href="#" onclick="deleteFee(` + data[0].pk + `); return false;"><i class="material-icons black-text">delete</i></a></td>
+						</tr>
+					`;
+					$("#fees").prepend(html);
+					$("#add_fee_modal").modal('close');
+					Materialize.toast("Updated", 1000);
+				} else {
+					Materialize.toast(data.error, 1000);
+				}
+			}, "json").fail(function(){
+				Materialize.toast("Unknown Error!", 1000);
+			});
+		}
+
+		function addCourse(){
+			var $inputs = $('#course_form :input');
+			var args = {};
+
+			$inputs.each(function(){
+				args[this.name] = $(this).val();
+			});
+			args['csrfmiddlewaretoken'] = '{{ csrf_token }}';
+			$.post("/form/addCourse/{{ student.pk }}", args, function(data){
+				if (data.error){
+					Materialize.toast(data.error, 1000);
+				} else {
+					$("#course_modal").modal('close');
+					var html = `
+						<li class="collection-item" id="course` + data[0].pk + `">
+							<span id="course_name` + data[0].pk + `">` + data[0].fields.course + `-` + data[0].fields.level + `</span>
+							<div class="secondary-content">
+								<a href="#" class="col s3" onclick="updateLevel(1, ` + data[0].pk + `); return false;">
+									<i class="material-icons green-text">thumb_up</i>
+								</a>
+								<a href="#" class=" col s3" onclick="updateLevel(-1, ` + data[0].pk + `); return false;">
+									<i class="material-icons red-text">thumb_down</i>
+								</a>
+								<a href="#" class="col s3" onclick="editCoursePopUp(` + data[0].pk + `); return false;">
+									<i class="material-icons black-text">edit</i>
+								</a>
+								<a href="#" class="col s3" onclick="deleteCourse(` + data[0].pk + `); return false;">
+									<i class="material-icons black-text">delete</i>
+								</a>
+							</div>
+						</li>
+					`;
+					$("#courses").append(html);
+					Materialize.toast("Update", 1000);
+				}
+			}, "json").fail(function(){
+				Materialize.toast("Error Occured", 1000);
+			});
+
+		}
+
+		function deleteCourse(course_id){
+			if (confirm("Are you sure you want to delete?")){
+				$.post("/form/deleteCourse", {
+					'csrfmiddlewaretoken' : '{{ csrf_token }}',
+					'course_id' : course_id
+				}, function(data){
+					if (data.error == ''){
+						Materialize.toast("Deleted!", 1000);
+						var element = document.getElementById("course"+course_id);
+						element.outerHTML = "";
+						delete element;
+					} else {
+						Materialize.toast(data.error, 1000);
+					}
+				}, "json").fail(function(){
+					Materialize.toast("Unknown Error", 1000);
+				});
+			}
+		}
+
+		function deleteFee(fee_id){
+			$.post("/form/deleteFee", {
+				'csrfmiddlewaretoken' : '{{ csrf_token }}',
+				'fee_id' : fee_id
+			}, function(data){
+				if (data.error == ''){
+					Materialize.toast("Deleted!", 1000);
+					var element = document.getElementById("fee"+fee_id);
+					element.outerHTML = "";
+					delete element;
+				} else {
+					Materialize.toast(data.error, 1000);
+				}
+			}, "json").fail(function(){
+				Materialize.toast("Unknown Error", 1000);
+			});	
+		}
+
+	</script>
+	
+	{% include 'form/navigation.html' %}
+
+	<div class="container">
+		
+		<div class="row valign-wrapper">
+			<div class="col s12 m6">
+				<blockquote>
+					<h4> Personal Details </h4>
+				</blockquote>
+			</div>
+			<div class="col s12 m6">
+				<a href="/form/edit_student/{{ student.pk }}" class="waves-effect waves-light btn col s3 offset-s3">
+					Edit
+				</a>
+				<a href="#view_student_modal" class="btn modal-trigger waves-effect waves-light col s3 offset-s1">
+					View All
+				</a>
+				<div class="modal" id="view_student_modal">
+					<div class="modal-content center">
+						<div class="row">
+							<span class="left">
+								ID: <b>{{ student.pk }}</b>
+							</span>
+							<span class="right">
+								DoE: <b>{{ student.doe|date:"d/m/Y" }}</b>
+							</span>
+						</div>
+						<div class="row">
+							<div class="col s12 m3">
+								Name: <b>{{ student.name|upper }}</b>
+							</div>
+							<div class="col s12 m3">
+								CI: <b>{{ student.getCi }}</b>
+							</div>
+							<div class="col s12 m3">
+								Gender: <b>{{ student.gender|upper }}</b>
+							</div>
+							<div class="col s12 m3">
+								Adhaar: <b>{{ student.adhaar }}</b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col s12 m4">
+								DoB: <b>{{ student.dob|date:"d/m/Y" }}</b>
+							</div>
+							<div class="col s12 m4">
+								Class: <b>{{ student.clas }}</b>
+							</div>
+							<div class="col s12 m4">
+								School: <b>{{ student.school|upper }}</b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col s12 m4">
+								Father Name: <b>{{ student.father_name|upper }}</b>
+							</div>
+							<div class="col s12 m4">
+								Father Mobile: <b>{{ student.mobile_f }}</b>
+							</div>
+							<div class="col s12 m4">
+								Father Occupation: <b>{{ student.occupation_father }}</b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col s12 m4">
+								Mother Name: <b>{{ student.mother_name|upper }}</b>
+							</div>
+							<div class="col s12 m4">
+								Mother Mobile: <b>{{ student.mobile_m }}</b>
+							</div>
+							<div class="col s12 m4">
+								Mother Occupation: <b>{{ student.occupation_mother }}</b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col s12 m4">
+								Annual Income: <b>{{ student.annual_income }}</b>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col s12">
+								Courses: <b>
+									{% for course in student.course_set.all %}
+										{{ course.course|upper }},
+									{% endfor %}
+								</b>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col s12 m6">
+				Name : <b>{{ student.name|upper }}</b>
+			</div>
+			<div class="col s12 m6">
+				CI : <b>{{ student.getCi }}</b>
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<div class="row valign-wrapper">
+			<div class="col s12 m6">
+				<blockquote>
+					<h4>Courses</h4>
+				</blockquote>
+			</div>
+			<div class="col s12 m6">
+
+				<!-- trigger -->
+				<a href="#course_modal" class="modal-trigger waves-effect waves-light btn col s6 offset-s3">
+					Add Course
+				</a>
+
+				<!-- modal -->
+				<div class="modal" id="course_modal">
+					<div class="modal-content">
+						<form class="row" id="course_form">
+							{% for f in course_form.hidden_fields %}
+								{{ f }}
+							{% endfor%}
+
+							{% for f in course_form.visible_fields %}
+
+								<div class="input-field col s12 m6">
+									{{ f }}
+									<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+								</div>
+
+							{% endfor%}
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="waves-effect waves-light btn" onclick="addCourse()">
+							Add
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m6 offset-m3">
+				<ul class="collection" id="courses">
+					{% for course in courses %}
+						<li class="collection-item" id="course{{course.id}}">
+							<span id="course_name{{course.id}}">{{course}}</span>
+							<div class="secondary-content">
+								<a href="#" class="col s3" onclick="updateLevel(1, {{course.id}}); return false;">
+									<i class="material-icons green-text">thumb_up</i>
+								</a>
+								<a href="#" class=" col s3" onclick="updateLevel(-1, {{course.id}}); return false;">
+									<i class="material-icons red-text">thumb_down</i>
+								</a>
+								<a href="#" class="col s3" onclick="editCoursePopUp({{ course.id }}); return false;">
+									<i class="material-icons black-text">edit</i>
+								</a>
+								<a href="#" class="col s3" onclick="deleteCourse({{course.id}}); return false;">
+									<i class="material-icons black-text">delete</i>
+								</a>
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<div class="row valign-wrapper">
+			<div class="col s12 m6">
+				<blockquote>
+					<h4>Fees</h4>
+				</blockquote>
+			</div>
+			<div class="col s12 m6">
+
+				<!-- Add Fee Modal -->
+
+				<!-- trigger -->
+				<a href="#add_fee_modal" class="modal-trigger waves-light waves-effect btn col s4 offset-s2">
+					Add Fee
+				</a>
+
+				<!-- modal -->
+				<div class="modal modal-fixed-footer" id="add_fee_modal">
+					<div class="modal-content">
+						<form method="POST" id="fee_form">
+							{% csrf_token %}
+							{% for f in fee_form.hidden_fields %}
+								{{ f }}
+							{% endfor %}
+							{% for f in fee_form.visible_fields %}
+								<div class="input-field col s12 m4">
+									{{ f }}
+									<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+								</div>
+							{% endfor %}
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="waves-effect waves-light btn" onclick="addFee()">
+							Add Fee
+						</button>
+					</div>
+				</div>
+
+
+
+				<!-- all fee modal -->
+
+				<!-- trigger -->
+				<a href="#all_fee_modal" class="waves-effect waves-light btn col s4 offset-s2">
+					View All
+				</a>
+
+				<!-- modal -->
+				<div class="modal modal-fixed-footer" id="all_fee_modal">
+					<div class="modal-content">
+						
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m6 offset-m3">
+				<table class="striped">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Amount</th>
+							<th>Remarks</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="fees">
+						{% for fee in fees %}
+							<tr id="fee{{ fee.id }}">
+								<td>{{ fee.date }}</td>
+								<td>Rs.{{ fee.amount }}</td>
+								<td>{{ fee.remarks }}</td>
+								<td>
+									<a href="#" onclick="deleteFee({{ fee.id }}); return false;"><i class="material-icons black-text">delete</i></a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+{% endblock %}
