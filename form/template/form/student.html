@@ -195,22 +195,22 @@
 			}
 		}
 
-		$(document).ready(function(){
-			$('#active').change(function() {
-				$.post(
-					"/form/changeActive/{{ student.pk }}",
-					{
-						'csrfmiddlewaretoken' : '{{ csrf_token }}',
-						'status' : $(this).is(':checked') ? "1" : "0"
-					},
-					function (data, status) {
-						if (data == "success") {}
-						else
-							alert("Error !");
-					},
-				);
-			});
-		});
+		// $(document).ready(function(){
+		// 	$('#active').change(function() {
+		// 		$.post(
+		// 			"/form/changeActive/{{ student.pk }}",
+		// 			{
+		// 				'csrfmiddlewaretoken' : '{{ csrf_token }}',
+		// 				'status' : $(this).is(':checked') ? "1" : "0"
+		// 			},
+		// 			function (data, status) {
+		// 				if (data == "success") {}
+		// 				else
+		// 					alert("Error !");
+		// 			},
+		// 		);
+		// 	});
+		// });
 
 	</script>
 	
