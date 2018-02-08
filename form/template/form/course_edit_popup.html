@@ -2,38 +2,40 @@
 
 {% block content %}
 
-<body>
-
-	<script type="text/javascript">
-		$(document).ready(function(){
-			{% if success %}
-				self.close()
-			{% endif %}
-			$('select').material_select();
-		});
-		window.onunload = refreshParent;
-		function refreshParent() {
-			window.opener.location.reload();
-		}
-	</script>
-	
-	<div class="container">
-		<div class="row">
-			<form method="POST" action="">
+	<body>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				{% if success %}
+					self.close()
+				{% endif %}
+				$('select').material_select();
+			});
+			window.onunload = refreshParent;
+			function refreshParent() {
+				window.opener.location.reload();
+			}
+		</script>
+		<div class="container">
+			<form style="width: 90%" method="POST" action="">
+				{% load form_extras %}
 				{% csrf_token %}
 				{% for field in form %}
-					<div class="input-field col s12 m6">
-						{{ field }}
-						<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="form-group">
+								<label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+							    {{ field|addcss:"form-control" }}
+							</div>
+						</div>
 					</div>
 				{% endfor %}
-				<button class="btn waves-effect waves-light" type="submit">
-					Update
-				</button>
+				<div class="row">
+					<div class="col-xs-12">
+						<button class="btn btn-success" type="submit">UPDATE</button>
+					</div>
+				</div>
 			</form>
 		</div>
-	</div>
-
-</body>
+	</body>
 
 {% endblock %}

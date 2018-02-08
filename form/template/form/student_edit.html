@@ -6,84 +6,78 @@
 	
 	{% include 'form/navigation.html' %}
 
-	<div class="container">
-		
-		<div class="row">
-			<div class="col s12 m6">
-				<blockquote>
-					<h5>
-						{{ student.pk }}
-					</h5>
-				</blockquote>
-			</div>
+	<main>
+
+		<div class="container" id="form_content">
+
 			{% if form.errors %}
-				<div class="col s12 m6">
-					<div class="card-panel red lighten-2 white-text">
-						<ul>
-							{% for key, value in form.errors.items %} 
-								<li> <b>{{ key|escape }}</b> : {{ value|escape }}</li>
-							{% endfor %}
-						</ul>	
-					</div>
+				<div class="col-xs-6 alert alert-warning alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<ul>
+						{% for key, value in form.errors.items %} 
+							<li> <b>{{ key|escape }}</b> : {{ value|escape }}</li>
+						{% endfor %}
+					</ul>
 				</div>
 			{% endif %}
-		</div>
 
-		<script type="text/javascript">
-			$(document).ready(function(){
-				$('select').material_select();
-				$('.datepicker').pickadate({
-					selectMonths: true, // Creates a dropdown to control month
-					selectYears: 15 // Creates a dropdown of 15 years to control year
-				});
-			});
-		</script>
-
-		<div class="row">
-			<form method="POST" action="">
+			<form action="" method="POST">
 				{% csrf_token %}
-				{% for field in form %}
+				{% load form_extras %}
 
-					{% if field.name == "student_id" %}
-
-					<input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
-
-					{% elif field.name == "ci" %}
-
-					<div class="input-field col s12 m4">
-
-						<select id="{{ field.id_for_label }}" name="{{ field.name }}" required>
-							{% for x, y in form.fields.ci.choices %}
-
-								<option value="{{ x }}" {% if field.value == x or field.value == y %} selected {% endif %}>
-									{{ y }}
-								</option>
-
-							{% endfor %}
-						</select>
-						<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+				<div class="row">
+					<div class="col-xs-12">
+						<h3>Personal details</h3>
 					</div>
+				</div>
+				<div class="row" style="margin-top: 20px">
+					{% for f in form %}
+						{% if f.name in personal_tuple %}
 
-					{% else %}
+							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+								  <div class="form-group">
+								    <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+								    {{ f|addcss:"form-control" }}
+								  </div>
+							</div>
 
-					<div class="input-field col s12 m4">
-						{{ field }}
-						<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+						{% endif %}
+					{% endfor %}
+				</div>
+
+				<div class="row" style="margin-top: 20px"> 
+					<div class="col-xs-12">
+						<h3>Parents details</h3>
 					</div>
+				</div>
 
-					{% endif %}
+				<div class="row" style="margin-top: 20px;">
+					{% for f in form %}
+						{% if f.name in parent_tuple %}
 
-				{% endfor %}
-				<div class="col s12 m4">
-					<button class="btn waves-light waves-effect" type="submit">
-						Update
-					</button>
+							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+								  <div class="form-group">
+								    <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+								    {{ f|addcss:"form-control" }}
+								  </div>
+							</div>
+
+						{% endif %}
+					{% endfor %}
+				</div>
+
+				<div class="row">
+					
+				</div>
+
+				<div class="row" style="margin-top: 20px;margin-bottom: 20px">
+					<div class="col-xs-12 text-center">
+						<button type="submit" class="btn btn-primary" id="submit">SUBMIT</button>
+					</div>
 				</div>
 			</form>
 		</div>
-
-	</div>
-
+	</main>
 </body>
 
 {% endblock %}

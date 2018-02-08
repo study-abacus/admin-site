@@ -2,7 +2,7 @@ from django import template
 
 register = template.Library()
 
-def widget_type(ob):
-	return ob.__class__.__name__
 
-register.filter('widget_type', widget_type)
+@register.filter(name='addcss')
+def addcss(field, css):
+   return field.as_widget(attrs={"class":css})

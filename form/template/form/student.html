@@ -2,20 +2,15 @@
 
 {% block content %}
 
+{% load static %}
+
 <body>
 
 	<script type="text/javascript">
-		$(document).ready(function(){
-			$('select').material_select();
-			{% if success %}
-				Materialize.toast("Updated !", 2000);
-			{% endif%}
-			$('.modal').modal();
-		});
 
 		function editCoursePopUp(id){
 			if (typeof(id) != typeof(1)){
-				Materialize.toast("Error !", 1500);
+				alert("Error !");
 				return false;
 			}
 			if (! window.focus) return true;
@@ -29,22 +24,22 @@
 			return false;
 		}
 
-		function updateLevel(x, id){
-			$.post("/form/updateLevel", {
-				'csrfmiddlewaretoken' : '{{ csrf_token }}',
-				'to_do' : x,
-				'course_id' : id
-			}, function(data){
-				if (data.error == ""){
-					$("#course_name"+id).text(data.course);
-					Materialize.toast("Updated", 1000);
-				} else {
-					Materialize.toast(data.error, 1000);
-				}
-			}, "json").fail(function(){
-				Materialize.toast("Error Occured", 1000);
-			});
-		}
+		// function updateLevel(x, id){
+		// 	$.post("/form/updateLevel", {
+		// 		'csrfmiddlewaretoken' : '{{ csrf_token }}',
+		// 		'to_do' : x,
+		// 		'course_id' : id
+		// 	}, function(data){
+		// 		if (data.error == ""){
+		// 			$("#course_name"+id).text(data.course);
+		// 			Materialize.toast("Updated", 1000);
+		// 		} else {
+		// 			Materialize.toast(data.error, 1000);
+		// 		}
+		// 	}, "json").fail(function(){
+		// 		Materialize.toast("Error Occured", 1000);
+		// 	});
+		// }
 
 		function formatDate(date) {
 			var monthNames = [
@@ -71,21 +66,53 @@
 			$.post("/form/addFee", args, function(data){
 				if (!data.error){
 					var html = `
-						<tr>
+						<tr id="fee` + data[0].pk +`">
 							<td>` + formatDate(new Date(data[0].fields.date)) + `</td>
 							<td>Rs.` + data[0].fields.amount + `</td>
 							<td>` + data[0].fields.remarks + `</td>
-							<td><a href="#" onclick="deleteFee(` + data[0].pk + `); return false;"><i class="material-icons black-text">delete</i></a></td>
+							<td><a href="#" onclick="deleteFee(` + data[0].pk + `); return false;"><img src="{% static 'img/delete.png' %}"></a></td>
 						</tr>
 					`;
 					$("#fees").prepend(html);
 					$("#add_fee_modal").modal('close');
-					Materialize.toast("Updated", 1000);
+					alert("Updated");
+					$('#fee_form')[0].reset()
 				} else {
-					Materialize.toast(data.error, 1000);
+					alert(data.error);
 				}
 			}, "json").fail(function(){
-				Materialize.toast("Unknown Error!", 1000);
+				alert("Unknown Error!");
+			});
+		}
+
+		function addAchievement(){
+			var $inputs = $('#achievement_form :input');
+			var args = {};
+
+			$inputs.each(function(){
+				args[this.name] = $(this).val();
+			});
+			args['csrfmiddlewaretoken'] = '{{ csrf_token }}';
+			$.post("/form/addAchievement/{{ student.pk }}", args, function(data){
+				if (data.error){
+					Materialize.toast(data.error, 1000);
+				} else {
+					$("#achievement_modal").modal('close');
+					var html = `
+					  	<tr>
+							<td>` + data[0].fields.date + `</td>
+							<td>` + data[0].fields.score + `</td>
+							<td>` + data[0].fields.position + `</td>
+							<td>` + data[0].fields.remarks + `</td>
+						</tr>
+
+
+					`;
+					$("#achievements").prepend(html);
+					Materialize.toast("Update", 1000);
+				}
+			}, "json").fail(function(){
+				Materialize.toast("Error Occured", 1000);
 			});
 		}
 
@@ -103,23 +130,21 @@
 				} else {
 					$("#course_modal").modal('close');
 					var html = `
-						<li class="collection-item" id="course` + data[0].pk + `">
-							<span id="course_name` + data[0].pk + `">` + data[0].fields.course + `-` + data[0].fields.level + `</span>
-							<div class="secondary-content">
-								<a href="#" class="col s3" onclick="updateLevel(1, ` + data[0].pk + `); return false;">
-									<i class="material-icons green-text">thumb_up</i>
-								</a>
-								<a href="#" class=" col s3" onclick="updateLevel(-1, ` + data[0].pk + `); return false;">
-									<i class="material-icons red-text">thumb_down</i>
-								</a>
-								<a href="#" class="col s3" onclick="editCoursePopUp(` + data[0].pk + `); return false;">
-									<i class="material-icons black-text">edit</i>
-								</a>
-								<a href="#" class="col s3" onclick="deleteCourse(` + data[0].pk + `); return false;">
-									<i class="material-icons black-text">delete</i>
-								</a>
-							</div>
-						</li>
+						<li class="list-group-item" id="` + data[0].pk + `">
+						  	<div class="row">
+								<div class="col-xs-8">
+									<span class="course_name">` + data[0].fields.course + `-` + data[0].fields.level + `</span>
+								</div>
+								<div class="col-xs-2">
+									<a  href="edit_course.html" onclick="editCoursePopUp(` + data[0].pk + `); return false;"><img src="{% static "img/edit.png" %} " class="course_button"></a>
+								</div>
+								<div class="col-xs-2">
+									<button class="course_buttons" onclick="deleteCourse(` + data[0].pk + `)"><img src="{% static "img/delete.png" %} " class="course_button"></button>
+								</div>
+							</div>	
+						  </li>
+
+
 					`;
 					$("#courses").append(html);
 					Materialize.toast("Update", 1000);
@@ -137,300 +162,472 @@
 					'course_id' : course_id
 				}, function(data){
 					if (data.error == ''){
-						Materialize.toast("Deleted!", 1000);
+						alert("Deleted!");
 						var element = document.getElementById("course"+course_id);
 						element.outerHTML = "";
 						delete element;
 					} else {
-						Materialize.toast(data.error, 1000);
+						alert(data.error);
 					}
 				}, "json").fail(function(){
-					Materialize.toast("Unknown Error", 1000);
+					alert("Unknown Error");
 				});
 			}
 		}
 
 		function deleteFee(fee_id){
-			$.post("/form/deleteFee", {
-				'csrfmiddlewaretoken' : '{{ csrf_token }}',
-				'fee_id' : fee_id
-			}, function(data){
-				if (data.error == ''){
-					Materialize.toast("Deleted!", 1000);
-					var element = document.getElementById("fee"+fee_id);
-					element.outerHTML = "";
-					delete element;
-				} else {
-					Materialize.toast(data.error, 1000);
-				}
-			}, "json").fail(function(){
-				Materialize.toast("Unknown Error", 1000);
-			});	
+			if (confirm("Are you sure you want to delete?")){
+				$.post("/form/deleteFee", {
+					'csrfmiddlewaretoken' : '{{ csrf_token }}',
+					'fee_id' : fee_id
+				}, function(data){
+					if (data.error == ''){
+						alert("Deleted!");
+						var element = document.getElementById("fee"+fee_id);
+						element.outerHTML = "";
+						delete element;
+					} else {
+						alert(data.error);
+					}
+				}, "json").fail(function(){
+					alert("Unknown Error");
+				});
+			}
 		}
+
+		$(document).ready(function(){
+			$('#active').change(function() {
+				$.post(
+					"/form/changeActive/{{ student.pk }}",
+					{
+						'csrfmiddlewaretoken' : '{{ csrf_token }}',
+						'status' : $(this).is(':checked') ? "1" : "0"
+					},
+					function (data, status) {
+						if (data == "success") {}
+						else
+							alert("Error !");
+					},
+				);
+			});
+		});
 
 	</script>
 	
 	{% include 'form/navigation.html' %}
 
-	<div class="container">
-		
-		<div class="row valign-wrapper">
-			<div class="col s12 m6">
-				<blockquote>
-					<h4> Personal Details </h4>
-				</blockquote>
-			</div>
-			<div class="col s12 m6">
-				<a href="/form/edit_student/{{ student.pk }}" class="waves-effect waves-light btn col s3 offset-s3">
-					Edit
-				</a>
-				<a href="#view_student_modal" class="btn modal-trigger waves-effect waves-light col s3 offset-s1">
-					View All
-				</a>
-				<div class="modal" id="view_student_modal">
-					<div class="modal-content center">
-						<div class="row">
-							<span class="left">
-								ID: <b>{{ student.pk }}</b>
-							</span>
-							<span class="right">
-								DoE: <b>{{ student.doe|date:"d/m/Y" }}</b>
-							</span>
-						</div>
-						<div class="row">
-							<div class="col s12 m3">
-								Name: <b>{{ student.name|upper }}</b>
-							</div>
-							<div class="col s12 m3">
-								CI: <b>{{ student.getCi }}</b>
-							</div>
-							<div class="col s12 m3">
-								Gender: <b>{{ student.gender|upper }}</b>
-							</div>
-							<div class="col s12 m3">
-								Adhaar: <b>{{ student.adhaar }}</b>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col s12 m4">
-								DoB: <b>{{ student.dob|date:"d/m/Y" }}</b>
-							</div>
-							<div class="col s12 m4">
-								Class: <b>{{ student.clas }}</b>
-							</div>
-							<div class="col s12 m4">
-								School: <b>{{ student.school|upper }}</b>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col s12 m4">
-								Father Name: <b>{{ student.father_name|upper }}</b>
-							</div>
-							<div class="col s12 m4">
-								Father Mobile: <b>{{ student.mobile_f }}</b>
-							</div>
-							<div class="col s12 m4">
-								Father Occupation: <b>{{ student.occupation_father }}</b>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col s12 m4">
-								Mother Name: <b>{{ student.mother_name|upper }}</b>
-							</div>
-							<div class="col s12 m4">
-								Mother Mobile: <b>{{ student.mobile_m }}</b>
-							</div>
-							<div class="col s12 m4">
-								Mother Occupation: <b>{{ student.occupation_mother }}</b>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col s12 m4">
-								Annual Income: <b>{{ student.annual_income }}</b>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col s12">
-								Courses: <b>
-									{% for course in student.course_set.all %}
-										{{ course.course|upper }},
-									{% endfor %}
-								</b>
-							</div>
-						</div>
+	<main>
+		<div class="row" style="margin: 20px;">
+
+		<!--PERSONAL DETAILS-->
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+				<div class="row">
+					<div class="col-xs-6">
+						<h3>Personal Details</h3>
 					</div>
-					<div class="modal-footer">
-						
+					<div class="col-xs-3" style="padding-top: 10px;text-align: right;">
+						<a href="/form/edit_student/{{ student.pk }}" class="btn btn-success">EDIT</a>
+					</div>
+					<div class="col-xs-3" style="padding-top: 10px;text-align: right;">
+						<label for="active">Active</label>
+						<input type="checkbox" name="" id="active" {% if student.active %} checked="" {% endif %}>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="list-group">
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">STUDENT ID:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.pk }}</span>
+								</div>
+							</div>	
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">STUDENT NAME:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.name|upper }}</span>
+								</div>
+							</div>	
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">GENDER:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.gender|upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">CI:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.getCi }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">DATE OF ENROLLEMENT:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.doe|date:"d/m/Y" }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">DOB:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.dob|date:"d/m/Y" }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">CLASS:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.clas }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">SCHOOL NAME:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.school|upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">ADHAAR NO.:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.adhaar }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">ADDRESS:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.address | upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">FATHER'S NAME:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.father_name|upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">FATHER'S OCCUPATION:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.occupation_father|upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">FATHER'S MOBILE NO.:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.mobile_f }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">MOTHER'S NAME:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.mother_name|upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">MOTHER'S OCCUPATION:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.occupation_mother|upper }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">MOTHER'S MOBILE NO.:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.mobile_m }}</span>
+								</div>
+							</div>
+						  </li>
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">ANNUAL INCOME:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ student.annual_income }}</span>
+								</div>
+							</div>
+						  </li>
+						</ul>
 					</div>
 				</div>
 			</div>
-		</div>
-		
-		<div class="row">
-			<div class="col s12 m6">
-				Name : <b>{{ student.name|upper }}</b>
-			</div>
-			<div class="col s12 m6">
-				CI : <b>{{ student.getCi }}</b>
-			</div>
-		</div>
 
-		<div class="divider"></div>
+			<!--course details-->
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 
-		<div class="row valign-wrapper">
-			<div class="col s12 m6">
-				<blockquote>
-					<h4>Courses</h4>
-				</blockquote>
-			</div>
-			<div class="col s12 m6">
+				<div class="row">
+					<div class="col-xs-6">
+						<h3>Course Details</h3>
+					</div>
+					<div class="col-xs-6" style="padding-top: 10px;text-align: right;">
+						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_course">ADD COURSE</button>
+					</div>
+				</div>
 
-				<!-- trigger -->
-				<a href="#course_modal" class="modal-trigger waves-effect waves-light btn col s6 offset-s3">
-					Add Course
-				</a>
-
-				<!-- modal -->
-				<div class="modal" id="course_modal">
-					<div class="modal-content">
-						<form class="row" id="course_form">
-							{% for f in course_form.hidden_fields %}
+				<!-- Modal -->
+				  <div class="modal fade" id="add_course" role="dialog">
+				    <div class="modal-dialog">
+				    
+				      <!-- Modal content-->
+				      <form id="course_form" class="modal-content">
+				      		{% for f in course_form.hidden_fields %}
 								{{ f }}
 							{% endfor%}
+				        <div class="modal-header">
+				          <button type="button" class="close" data-dismiss="modal">&times;</button>
+				          <h4 class="modal-title">ADD COURSE</h4>
+				        </div>
+				        <div class="modal-body">
+				          <div class="row" style="margin-top:20px">
+				          {% load form_extras %}
+				          {% for f in course_form.visible_fields %}
 
-							{% for f in course_form.visible_fields %}
+				          	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+				          		<div class="form-group">
+								    <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+								    {{ f|addcss:"form-control" }}
+							  	</div>
+				          	</div>
 
-								<div class="input-field col s12 m6">
+							{% endfor%}
+						</div>
+				        </div>
+				        <div class="modal-footer">
+				          <button onclick="addCourse()" class="btn btn-default" data-dismiss="modal">ADD</button>
+				        </div>
+				      </form>
+				      
+				    </div>
+				  </div>
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="list-group" id="courses">
+							{% for course in courses %}
+							  <li class="list-group-item" id="course{{ course.id }}">
+							  	<div class="row">
+									<div class="col-xs-8">
+										<span class="course_name">{{ course|upper }}</span>
+									</div>
+									<div class="col-xs-2">
+										<a  href="edit_course.html" onclick="editCoursePopUp({{ course.id }}); return false;"><img src="{% static "img/edit.png" %} " class="course_button"></a>
+									</div>
+									<div class="col-xs-2">
+										<button class="course_buttons" onclick="deleteCourse({{ course.id }})"><img src="{% static "img/delete.png" %} " class="course_button"></button>
+									</div>
+								</div>	
+							  </li>
+						  	{% endfor %}
+						  
+						</ul>
+					</div>
+				</div>
+
+
+				<!-- Modal -->
+				  <div class="modal fade" id="add_achievement" role="dialog">
+				    <div class="modal-dialog">
+				    
+				      <!-- Modal content-->
+				      <form id="achievement_form" class="modal-content">
+				      		{% for f in achievement_form.hidden_fields %}
+								{{ f }}
+							{% endfor%}
+				        <div class="modal-header">
+				          <button type="button" class="close" data-dismiss="modal">&times;</button>
+				          <h4 class="modal-title">ADD ACHIEVEMENT</h4>
+				        </div>
+				        <div class="modal-body">
+				          <div class="row" style="margin-top:20px">
+				          {% for f in achievement_form.visible_fields %}
+
+				          	<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+				          		<div class="form-group">
 									{{ f }}
 									<label for="{{ f.id_for_label }}">{{ f.label }}</label>
 								</div>
+				          	</div>
 
 							{% endfor%}
-						</form>
+						</div>
+				        </div>
+				        <div class="modal-footer">
+				          <button onclick="addAchievement()" class="btn btn-default" data-dismiss="modal">ADD</button>
+				        </div>
+				      </form>
+				      
+				    </div>
+				  </div>
+				<div class="row">
+					<div class="col-xs-6">
+						<h3>Achievements</h3>
 					</div>
-					<div class="modal-footer">
-						<button class="waves-effect waves-light btn" onclick="addCourse()">
-							Add
-						</button>
+					<div class="col-xs-6" style="padding-top: 10px;text-align: right;">
+						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_achievement">ADD ACHIEVEMENT</button>
 					</div>
 				</div>
-
+				<div class="row">
+					<table class="table table-condensed table-striped" id="fees_table">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Score</th>
+								<th>Position</th>
+								<th>Remarks</th>
+							</tr>
+						</thead>
+						<tbody id="achievements">
+							{% for achievement in achievements %}
+							<tr>
+								<td>{{ achievement.date }}</td>
+								<td>{{ achievement.score }}</td>
+								<td>{{ achievement.position }}</td>
+								<td>{{ achievement.remarks }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>	
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col s12 m6 offset-m3">
-				<ul class="collection" id="courses">
-					{% for course in courses %}
-						<li class="collection-item" id="course{{course.id}}">
-							<span id="course_name{{course.id}}">{{course}}</span>
-							<div class="secondary-content">
-								<a href="#" class="col s3" onclick="updateLevel(1, {{course.id}}); return false;">
-									<i class="material-icons green-text">thumb_up</i>
-								</a>
-								<a href="#" class=" col s3" onclick="updateLevel(-1, {{course.id}}); return false;">
-									<i class="material-icons red-text">thumb_down</i>
-								</a>
-								<a href="#" class="col s3" onclick="editCoursePopUp({{ course.id }}); return false;">
-									<i class="material-icons black-text">edit</i>
-								</a>
-								<a href="#" class="col s3" onclick="deleteCourse({{course.id}}); return false;">
-									<i class="material-icons black-text">delete</i>
-								</a>
-							</div>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-		</div>
 
-		<div class="divider"></div>
+			<!--FEE DETAILS-->
+			<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+				<div class="row">
+					<div class="col-xs-6">
+						<h3>Fee Details</h3>
+					</div>
+					<div class="col-xs-6" style="padding-top: 10px;text-align: right;">
+						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_fee">ADD FEE</button>
+					</div>
 
-		<div class="row valign-wrapper">
-			<div class="col s12 m6">
-				<blockquote>
-					<h4>Fees</h4>
-				</blockquote>
-			</div>
-			<div class="col s12 m6">
+				</div>
 
-				<!-- Add Fee Modal -->
-
-				<!-- trigger -->
-				<a href="#add_fee_modal" class="modal-trigger waves-light waves-effect btn col s4 offset-s2">
-					Add Fee
-				</a>
-
-				<!-- modal -->
-				<div class="modal modal-fixed-footer" id="add_fee_modal">
-					<div class="modal-content">
-						<form method="POST" id="fee_form">
+				<!-- Modal -->
+				  <div class="modal fade" id="add_fee" role="dialog">
+				    <div class="modal-dialog">
+				    
+				      <!-- Modal content-->
+				      <div class="modal-content">
+				        <div class="modal-header">
+				          <button type="button" class="close" data-dismiss="modal">&times;</button>
+				          <h4 class="modal-title">ADD FEE</h4>
+				        </div>
+				        <div class="modal-body">
+				          <form id="fee_form" class="row" style="margin-top:20px">
 							{% csrf_token %}
 							{% for f in fee_form.hidden_fields %}
 								{{ f }}
 							{% endfor %}
+
+							{% load form_extras %}
+
 							{% for f in fee_form.visible_fields %}
-								<div class="input-field col s12 m4">
-									{{ f }}
-									<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+								<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+									<div class="form-group">
+										<label for="{{ f.id_for_label }}">{{ f.label }}</label>
+										{{ f|addcss:"form-control" }}
+									</div>
 								</div>
 							{% endfor %}
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button class="waves-effect waves-light btn" onclick="addFee()">
-							Add Fee
-						</button>
+
+				        </div>
+				        <div class="modal-footer">
+				          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="addFee()">ADD</button>
+				        </div>
+				      </div>
+				      
+				    </div>
+				  </div>
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="table-responsive">
+							<table class="table table-condensed table-striped" id="fees_table">
+								 <thead>
+							      <tr>
+							        <th>DATE</th>
+							        <th>AMOUNT</th>
+							        <th>REMARKS</th>
+							        <th>ACTIONS</th>
+							      </tr>
+							    </thead>
+							    <tbody id="fees">
+							    {% for fee in fees %}
+									<tr id="fee{{ fee.id }}">
+										<td>{{ fee.date }}</td>
+										<td>Rs.{{ fee.amount }}</td>
+										<td>{{ fee.remarks }}</td>
+										<td>
+											<a href="#" onclick="deleteFee({{ fee.id }}); return false;" class="right"><img src="{% static 'img/delete.png' %}" class="course_button"></a>
+										</td>
+									</tr>
+								{% endfor %}
+							    </tbody>
+							</table>
+						</div>
 					</div>
 				</div>
-
-
-
-				<!-- all fee modal -->
-
-				<!-- trigger -->
-				<a href="#all_fee_modal" class="waves-effect waves-light btn col s4 offset-s2">
-					View All
-				</a>
-
-				<!-- modal -->
-				<div class="modal modal-fixed-footer" id="all_fee_modal">
-					<div class="modal-content">
-						
-					</div>
-				</div>
-
-
 			</div>
 		</div>
-		<div class="row">
-			<div class="col s12 m6 offset-m3">
-				<table class="striped">
-					<thead>
-						<tr>
-							<th>Date</th>
-							<th>Amount</th>
-							<th>Remarks</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody id="fees">
-						{% for fee in fees %}
-							<tr id="fee{{ fee.id }}">
-								<td>{{ fee.date }}</td>
-								<td>Rs.{{ fee.amount }}</td>
-								<td>{{ fee.remarks }}</td>
-								<td>
-									<a href="#" onclick="deleteFee({{ fee.id }}); return false;"><i class="material-icons black-text">delete</i></a>
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-		</div>
-
-	</div>
-
+	</main>
 </body>
 
 {% endblock %}

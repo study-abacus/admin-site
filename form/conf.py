@@ -31,7 +31,7 @@ CI = (
 	('16', 'Neeraj Sharma'),
 	('17', 'Nisha Chopra'),
 	('18', 'Pooja Pandey'),
-	('19', 'Pinky Jain'),
+	('19', 'Pinki Jain'),
 	('20', 'Poonam Gupta'),
 	('21', 'Rachna Mehrotra'),
 	('22', 'Ritika Aggarwal'),
@@ -42,5 +42,8 @@ CI = (
 	('27', 'Sonam Gupta'),
 	('28', 'Sudeshna Dutta'),
 	('29', 'Suman Jain'),
-	('30', 'Sunita Khurana')
+	('30', 'Sunita Khurana'),
+	('31', 'Monika Singhal'),
+	('32', 'Poonam Arora'),
+	('33', 'Kirti Chugh'),
 )

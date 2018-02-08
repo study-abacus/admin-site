@@ -2,7 +2,10 @@ from django.db import models
 from .conf import COURSES, CI, GENDER
 from django.utils import timezone
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
 # Create your models here.
+
+SORTED_CI = sorted(CI, key = lambda x: (x[1]))
 
 class Student(models.Model):
 
@@ -12,7 +15,8 @@ class Student(models.Model):
 	student_id = models.IntegerField(primary_key=True)
 	name = models.CharField(max_length=200)
 	gender = models.CharField(max_length=10, choices=GENDER)
-	ci = models.CharField(max_length=200, choices=CI)
+	# ci = models.CharField(max_length=200, choices=SORTED_CI)
+	ci = models.ForeignKey(User)
 
 	#optional
 	doe = models.DateField(null=True, blank=True, default=timezone.now())
@@ -26,13 +30,15 @@ class Student(models.Model):
 	mother_name = models.CharField(max_length=100, blank=True)
 	mobile_m = models.CharField(validators=[phone_regex], blank=True, max_length=15)
 	occupation_mother = models.CharField(max_length=100, blank=True)
+	address = models.CharField(max_length=1000, blank=True)
 	annual_income = models.IntegerField(null=True, blank=True)
+	active = models.BooleanField(default = True)
 
 	def getCi(self):
-		try:
-			return CI[int(self.ci)-1][1]
-		except:
-			return self.ci
+		return self.ci.first_name + " " + self.ci.last_name
+
+	def getLatestFee(self):
+		return self.fee_set.order_by("-date")[0] if self.fee_set.count() > 0 else None
 
 	def __str__ (self):
 		return self.name
@@ -50,6 +56,13 @@ class Course(models.Model):
 
 	def __str__(self):
 		return "%s-%d" % (self.course, self.level)
+
+class Achievement(models.Model):
+	student = models.ForeignKey(Student)
+	date = models.CharField(max_length = 200)
+	score = models.FloatField()
+	position = models.CharField(max_length = 100)
+	remarks = models.CharField(max_length = 500)
 
 class Fee(models.Model):
 	student = models.ForeignKey(Student)
