@@ -203,7 +203,7 @@
 				}, function(data){
 					if (data.error == ''){
 						alert("Deleted!");
-						var element = document.getElementById("fee"+fee_id);
+						var element = document.getElementById("achievement"+fee_id);
 						element.outerHTML = "";
 						delete element;
 					} else {
@@ -557,7 +557,7 @@
 						</thead>
 						<tbody id="achievements">
 							{% for achievement in achievements %}
-							<tr>
+							<tr id="achievement{{ achievement.id }}">
 								<td>{{ achievement.date }}</td>
 								<td>{{ achievement.score }}</td>
 								<td>{{ achievement.position }}</td>
