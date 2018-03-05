@@ -19,6 +19,7 @@ urlpatterns = [
 	url(r'^addFee/?$', views.addFee, name='addFee'),
 	url(r'^deleteCourse/?$', views.deleteCourse, name='deletCourse'),
 	url(r'^deleteFee/?$', views.deleteFee, name='deletFee'),
+	url(r'^deleteAchievement/?$', views.deleteAchievement, name='deleteAchievement'),
 	#excel_import
 	url(r'^excelImport/(?P<key>[a-zA-Z0-9]+)/?$', views.excelImport, name='excelImport'),
 	url(r'^excelImportFee/(?P<key>[a-zA-Z0-9]+)/?$', views.excelImportFee, name='excelImportFee'),

@@ -194,6 +194,26 @@
 				});
 			}
 		}
+		
+		function deleteAchievement(fee_id){
+			if (confirm("Are you sure you want to delete?")){
+				$.post("/form/deleteAchievement", {
+					'csrfmiddlewaretoken' : '{{ csrf_token }}',
+					'fee_id' : fee_id
+				}, function(data){
+					if (data.error == ''){
+						alert("Deleted!");
+						var element = document.getElementById("fee"+fee_id);
+						element.outerHTML = "";
+						delete element;
+					} else {
+						alert(data.error);
+					}
+				}, "json").fail(function(){
+					alert("Unknown Error");
+				});
+			}
+		}
 
 		// $(document).ready(function(){
 		// 	$('#active').change(function() {
@@ -542,6 +562,10 @@
 								<td>{{ achievement.score }}</td>
 								<td>{{ achievement.position }}</td>
 								<td>{{ achievement.remarks }}</td>
+								<td>
+									<a href="#" onclick="deleteAchievement({{ achievement.id }}); return false;" class="right"><img src="{% static 'img/delete.png' %}" class="course_button"></a>
+								</td>
+
 							</tr>
 							{% endfor %}
 						</tbody>

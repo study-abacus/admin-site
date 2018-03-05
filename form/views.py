@@ -110,6 +110,28 @@ def deleteFee(request):
 		raise Http404()	
 
 @login_required
+def deleteAchievement(request):
+	if request.method == 'POST':
+		response = {
+			'error' : ''
+		}
+		fee_id = request.POST['fee_id']
+		if not re.match('^[0-9]+$', fee_id):
+			response['error'] = 'Incorrect id format'
+		try:
+			achievement = Achievement.objects.get(pk=fee_id)
+		except:
+			response['error'] = 'ID doesnt exists'
+
+		if response['error'] == '':
+			achievement.delete()
+
+		return HttpResponse(json.dumps(response))
+
+	else:
+		raise Http404()
+
+@login_required
 def addFee(request):
 	if request.method == 'POST':
 		fee_form = FeeAddForm(request.POST)
