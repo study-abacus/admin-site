@@ -19,7 +19,7 @@ class StudentUpdateForm(forms.ModelForm):
 			'mobile_m' : 'Mother\'s Mobile Number',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2010,2020)]),
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(1990,2018)])
 		}
 class StudentUpdateFormByCi(forms.ModelForm):
@@ -35,7 +35,7 @@ class StudentUpdateFormByCi(forms.ModelForm):
 			'mobile_m' : 'Mother\'s Mobile Number',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2010,2020)]),
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(1990,2018)])
 		}
 
@@ -51,7 +51,7 @@ class StudentAddForm(forms.ModelForm):
 			'mobile_m' : 'Mother\'s Mobile Number',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2010,2020)]),
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(1990,2018)])
 		}
 	course = forms.CharField(max_length=2, widget=forms.Select(choices=COURSES), label="Course")
@@ -70,7 +70,7 @@ class StudentAddFormByCi(forms.ModelForm):
 			'mobile_m' : 'Mother\'s Mobile Number',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2010,2020)]),
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(1990,2018)])
 		}
 	course = forms.CharField(max_length=2, widget=forms.Select(choices=COURSES), label="Course")
@@ -93,6 +93,6 @@ class AchievementAddForm(forms.ModelForm):
 
 class FeeAddForm(forms.Form):
 	student_id = forms.IntegerField(widget=forms.HiddenInput())
-	date = forms.DateField(widget=forms.SelectDateWidget(years=[y for y in range(2012,2020)]))
+	date = forms.DateField(widget=forms.SelectDateWidget(years=[y for y in range(2016,2020)]))
 	amount = forms.IntegerField(label="Amount")
 	remarks = forms.CharField(max_length=50, required=False, label="Remarks")
