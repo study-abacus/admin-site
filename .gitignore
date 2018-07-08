@@ -2,3 +2,4 @@ env/
 .env
 *.py[soc]
 *.sw[soc]
+staticfiles
