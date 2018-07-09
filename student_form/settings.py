@@ -108,6 +108,7 @@ else:
 	        'PORT': '3306',
 	    }
 	}
+	print(DATABASES)
 
 
 # Password validation
