@@ -91,20 +91,20 @@ if DEBUG:
 	    }
 	}
 else:
-	DATABASES = {
-	    'default': dj_database_url.config(default=config('DATABASE_URL')),
-	}
+	#DATABASES = {
+	#    'default': dj_database_url.config(default=config('DATABASE_URL')),
+	#}
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'student_form',
-#         'USER': 'root',
-#         'PASSWORD': 'j@t!n@dm!n',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.mysql',
+	        'NAME': config('DB_NAME'),
+	        'USER': config('DB_USER'),
+	        'PASSWORD': config('DB_PASS'),
+	        'HOST': 'abboniss.com',
+	        'PORT': '3306',
+	    }
+	}
 
 
 # Password validation
