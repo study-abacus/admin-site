@@ -101,7 +101,7 @@ else:
 	        'NAME': config('DB_NAME'),
 	        'USER': config('DB_USER'),
 	        'PASSWORD': config('DB_PASS'),
-	        'HOST': '68.168.209.106',
+	        'HOST': config('DB_HOST'),
 	        'PORT': '3306',
 	    }
 	}
