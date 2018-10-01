@@ -171,3 +171,5 @@ LOGGING = {
 		},
 	},
 }
+
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', cast = bool, default = False)
