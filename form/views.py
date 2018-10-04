@@ -445,7 +445,7 @@ def logout_view(request):
 		raise Http404()
 
 def login_view(request):
-	if request.user.is_authenticated():
+	if request.user.is_authenticated:
 		return HttpResponseRedirect('/form')
 
 	invalid = False

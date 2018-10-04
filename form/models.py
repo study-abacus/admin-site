@@ -16,7 +16,7 @@ class Student(models.Model):
 	name = models.CharField(max_length=200)
 	gender = models.CharField(max_length=10, choices=GENDER)
 	# ci = models.CharField(max_length=200, choices=SORTED_CI)
-	ci = models.ForeignKey(User)
+	ci = models.ForeignKey(User, on_delete = models.DO_NOTHING)
 
 	#optional
 	doe = models.DateField(null=True, blank=True, default=timezone.now())
@@ -44,7 +44,7 @@ class Student(models.Model):
 		return self.name
 
 class Course(models.Model):
-	student = models.ForeignKey(Student)
+	student = models.ForeignKey(Student, on_delete = models.CASCADE)
 	course = models.CharField(max_length=2, choices=COURSES)
 	level = models.IntegerField()
 
@@ -58,14 +58,14 @@ class Course(models.Model):
 		return "%s-%d" % (self.course, self.level)
 
 class Achievement(models.Model):
-	student = models.ForeignKey(Student)
+	student = models.ForeignKey(Student, on_delete = models.CASCADE)
 	date = models.CharField(max_length = 200)
 	score = models.FloatField()
 	position = models.CharField(max_length = 100)
 	remarks = models.CharField(max_length = 500)
 
 class Fee(models.Model):
-	student = models.ForeignKey(Student)
+	student = models.ForeignKey(Student, on_delete = models.CASCADE)
 	date = models.DateField(default=timezone.now())
 	amount = models.IntegerField()
 	remarks = models.CharField(max_length=50, blank=True)
