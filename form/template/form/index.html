@@ -19,7 +19,8 @@
 						if (data.length > 0)
 							//console.log("student/"+data[0].pk)
 							window.location = "student/"+data[0].pk;
-					}, "json").fail(function(){
+					}, "json")
+					.fail(function(){
 						alert("Error !");
 					});
 				} else {
@@ -30,10 +31,11 @@
 						}, function(data){
 							$("#dyn").html("");
 							$.each(data, function(i, item){
-								$("#dyn").append(`<a href="student/` + item.pk + `"><li class="list-group-item student_list">` + item.pk + ` - ` + item.fields.name + `</li></a>`);
+								$("#dyn").append(`<a href="student/` + item.pk + `"><li class="list-group-item student_list">` + item.pk + ` - ` + item.name + `</li></a>`);
 							});
 
-						}, "json").fail(function(){
+						}, "json")
+						.fail(function(){
 							alert("Error !");
 						});
 					} else {
@@ -55,7 +57,7 @@
 					<span id="stu_count">
 						NO OF STUDENTS: 
 						<span style="font-weight: 500">
-							{{ stu_cnt }}
+							{{ student_count }}
 						</span>
 					</span>
 				</div>

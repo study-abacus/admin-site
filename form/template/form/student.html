@@ -482,7 +482,7 @@
 				<div class="row">
 					<div class="col-xs-12">
 						<ul class="list-group" id="courses">
-							{% for course in courses %}
+							{% for course in student.course_set.all %}
 							  <li class="list-group-item" id="course{{ course.id }}">
 							  	<div class="row">
 									<div class="col-xs-8">
@@ -556,7 +556,7 @@
 							</tr>
 						</thead>
 						<tbody id="achievements">
-							{% for achievement in achievements %}
+							{% for achievement in student.achievement_set.all %}
 							<tr id="achievement{{ achievement.id }}">
 								<td>{{ achievement.date }}</td>
 								<td>{{ achievement.score }}</td>

@@ -31,17 +31,28 @@
 					</div>
 				</div>
 				<div class="row" style="margin-top: 20px">
-					{% for f in form %}
-						{% if f.name in personal_tuple %}
+					{% for f in form.get_personal_fields %}
 
-							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-								  <div class="form-group">
-								    <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
-								    {{ f|addcss:"form-control" }}
-								  </div>
+						{% if f.name == "doe" or f.name == "dob" %}
+
+						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+								<div class="form-group">
+								<label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+								{{ f }}
+								</div>
+						</div>
+
+						{% else %}
+
+						<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+							<div class="form-group">
+								<label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+								{{ f|addcss:"form-control" }}
 							</div>
+						</div>
 
 						{% endif %}
+
 					{% endfor %}
 				</div>
 
@@ -52,8 +63,7 @@
 				</div>
 
 				<div class="row" style="margin-top: 20px;">
-					{% for f in form %}
-						{% if f.name in parent_tuple %}
+					{% for f in form.get_parent_fields %}
 
 							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 								  <div class="form-group">
@@ -62,7 +72,6 @@
 								  </div>
 							</div>
 
-						{% endif %}
 					{% endfor %}
 				</div>
 
