@@ -36,7 +36,7 @@ class StudentList(LoginRequiredMixin, ListView):
     model = models.Student
     template_name = 'form/students.html'
     context_object_name = 'students'
-    paginate_by = 15
+    paginate_by = 2
 
     def get_context_data(self):
         context = super(StudentList, self).get_context_data()
@@ -44,7 +44,9 @@ class StudentList(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        students = models.Student.objects.all() if self.request.user.is_superuser else models.Student.objects.filter(ci = self.request.user.id)
+        students = super(StudentList, self).get_queryset()
+        if not self.request.user.is_superuser:
+            students = students.filter(ci = self.request.user)
 
         kwargs = self.request.GET
         name = '' if 'name' not in kwargs else kwargs['name']
@@ -57,7 +59,7 @@ class StudentList(LoginRequiredMixin, ListView):
         if name != '':
             students = students.filter(name__icontains = name)
         if ci != '':
-            students = students.filter(ci__name__icontains = ci)
+            students = students.filter(ci__first_name__icontains = ci)
         if student_id != '':
             students = students.filter(student_id = student_id)
 
