@@ -4,6 +4,7 @@ from form import views
 
 urlpatterns = [
 	path('', views.Index.as_view(), name='index'),
+	path('students/', views.StudentList.as_view(), name='students'),
 	path('student/<int:pk>', views.StudentDetail.as_view(), name='student'),
 	path('add_student/', views.StudentAdd.as_view(), name='add_student'),
 	path('edit_student/<int:pk>', views.StudentUpdate.as_view(), name='edit_student'),

@@ -1,0 +1,88 @@
+{% extends 'form/base.html' %}
+
+{% load form_extras %}
+
+{% block content %}
+
+<body>
+
+    {% include 'form/navigation.html' %}
+
+    <main>
+        <div class="container">
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <h3>Students</h3>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                        <nav aria-label="Page navigation example" style="float: right">
+                            {% if is_paginated %}
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li><a href="?page={{ page_obj.previous_page_number }}&{% query_transform request %}">&laquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&laquo;</span></li>
+                                    {% endif %}
+                                    {% for i in paginator.page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                        {% else %}
+                                            <li><a href="?page={{ i }}&{% query_transform request %}">{{ i }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                        <li><a href="?page={{ page_obj.next_page_number }}&{% query_transform request %}">&raquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&raquo;</span></li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                              
+                        </nav>
+                </div>
+            </div>
+
+            <div class="row">
+                <form action="" method="GET">
+                    {% for f in search_form %}
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                            <div class="form-group">
+                                <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+                                {{ f|addcss:"form-control" }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <table class="table row">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">CI</th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <th scope="row">{{ student.student_id }}</th>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.ci.first_name }} {{ student.ci.last_name }}</td>
+                            <td><a href="{% url 'student' pk=student.pk %}" class="btn btn-success">View</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+
+</body>
+
+{% endblock %}

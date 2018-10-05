@@ -50,15 +50,16 @@ class StudentAddForm(StudentUpdateForm):
 class StudentAddFormByCi(StudentAddForm):
 	StudentAddForm.Meta.exclude = ('ci',)
 
+class StudentSearch(forms.Form):
+	student_id = forms.IntegerField(required = False)
+	name = forms.CharField(required = False)
+	ci = forms.CharField(label = "CI", required = False)
 
 class CourseAddForm(forms.ModelForm):
 	class Meta:
 		model = Course
 		fields = '__all__'
 		exclude = ('student',)
-	# student_id = forms.IntegerField(widget=forms.HiddenInput())
-	# course = forms.CharField(max_length=2, widget=forms.Select(choices=COURSES), label="Course")
-	# level = forms.IntegerField(initial=1, label="Level")	
 
 class AchievementAddForm(forms.ModelForm):
 	class Meta:
