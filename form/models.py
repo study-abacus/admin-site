@@ -1,8 +1,10 @@
 from django.db import models
-from .conf import COURSES, CI, GENDER
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
+
+from form.conf import COURSES, CI, GENDER
+
 # Create your models here.
 
 SORTED_CI = sorted(CI, key = lambda x: (x[1]))
@@ -19,8 +21,8 @@ class Student(models.Model):
 	ci = models.ForeignKey(User, on_delete = models.DO_NOTHING)
 
 	#optional
-	doe = models.DateField(null=True, blank=True, auto_now=True)
-	dob = models.DateField(null=True, blank=True, auto_now=True)
+	doe = models.DateField(null=True, blank=True, default = timezone.now)
+	dob = models.DateField(null=True, blank=True, default = timezone.now)
 	clas = models.IntegerField(blank=True, null=True)
 	school = models.CharField(max_length=200, blank=True)
 	adhaar = models.IntegerField(null=True, blank=True)
@@ -59,7 +61,7 @@ class Course(models.Model):
 
 class Achievement(models.Model):
 	student = models.ForeignKey(Student, on_delete = models.CASCADE)
-	date = models.DateField(auto_now=True)
+	date = models.DateField(default = timezone.now)
 	score = models.FloatField()
 	position = models.CharField(max_length = 100)
 	remarks = models.CharField(max_length = 500)
@@ -72,7 +74,7 @@ class Achievement(models.Model):
 
 class Fee(models.Model):
 	student = models.ForeignKey(Student, on_delete = models.CASCADE)
-	date = models.DateField(auto_now=True)
+	date = models.DateField(default = timezone.now)
 	amount = models.IntegerField()
 	remarks = models.CharField(max_length=50, blank=True, null=True)
 
