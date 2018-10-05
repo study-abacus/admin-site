@@ -1,0 +1,40 @@
+{% extends 'form/base.html' %}
+
+{% load form_extras %}
+
+{% block content %}
+
+    <body>
+        <div class="container">
+            <form action="" method="post" class="row">
+                {% csrf_token %}
+    
+                {% for f in form %}
+                
+                    {% if f.name == "date" %}
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+                                {{ f }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
+                                {{ f|addcss:"form-control" }}
+                            </div>
+                        </div>
+                    {% endif %}
+    
+                {% endfor %}
+                    
+                <button type="submit" class="btn btn-success">
+                    Add
+                </button>
+            </form>
+        </div>
+        
+    </body>
+
+{% endblock %}

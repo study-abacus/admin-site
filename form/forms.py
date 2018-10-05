@@ -1,6 +1,6 @@
 from django import forms
-from .conf import COURSES, CI
-from .models import Student, Course, Achievement
+from form.conf import COURSES, CI
+from form.models import Student, Course, Achievement, Fee
 
 
 class LoginForm(forms.Form):
@@ -66,9 +66,15 @@ class AchievementAddForm(forms.ModelForm):
 		model = Achievement
 		fields = '__all__'
 		exclude = ('student',)
+		widgets = {
+			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2020)])
+		}
 
-class FeeAddForm(forms.Form):
-	student_id = forms.IntegerField(widget=forms.HiddenInput())
-	date = forms.DateField(widget=forms.SelectDateWidget(years=[y for y in range(2016,2020)]))
-	amount = forms.IntegerField(label="Amount")
-	remarks = forms.CharField(max_length=50, required=False, label="Remarks")
+class FeeAddForm(forms.ModelForm):
+	class Meta:
+		model = Fee
+		fields = '__all__'
+		exclude = ('student',)
+		widgets = {
+			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2020)])
+		}

@@ -1,0 +1,22 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+
+    <body>
+        <script type="text/javascript">
+            var close = self.close
+            $(document).ready(() => {
+                setTimeout(() => {
+                    close()
+                }, 1000);
+            });
+            window.onunload = refreshParent;
+			function refreshParent() {
+				window.opener.location.reload();
+			}
+        </script>
+
+        <h1>Success</h1>
+    </body>
+
+{% endblock %}

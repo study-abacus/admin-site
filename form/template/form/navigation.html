@@ -11,8 +11,9 @@
 	    </div>
 	    <div class="collapse navbar-collapse" id="myNavbar">
 	      <ul class="nav navbar-nav navbar-right">
-	        <li><a href="/form/add_student">ADD STUDENT</a></li>
-	        <li><a href="/form/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+					<li><a href="{% url 'students' %}">All Students</a></li>
+	        <li><a href="{% url 'add_student' %}">Add Student</a></li>
+	        <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 	      </ul>
 	    </div>
 	  </div>

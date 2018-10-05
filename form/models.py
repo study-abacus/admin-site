@@ -19,8 +19,8 @@ class Student(models.Model):
 	ci = models.ForeignKey(User, on_delete = models.DO_NOTHING)
 
 	#optional
-	doe = models.DateField(null=True, blank=True, default=timezone.now())
-	dob = models.DateField(null=True, blank=True, default=timezone.now())
+	doe = models.DateField(null=True, blank=True, auto_now=True)
+	dob = models.DateField(null=True, blank=True, auto_now=True)
 	clas = models.IntegerField(blank=True, null=True)
 	school = models.CharField(max_length=200, blank=True)
 	adhaar = models.IntegerField(null=True, blank=True)
@@ -59,16 +59,25 @@ class Course(models.Model):
 
 class Achievement(models.Model):
 	student = models.ForeignKey(Student, on_delete = models.CASCADE)
-	date = models.CharField(max_length = 200)
+	date = models.DateField(auto_now=True)
 	score = models.FloatField()
 	position = models.CharField(max_length = 100)
 	remarks = models.CharField(max_length = 500)
 
+	def __str__(self):
+		return "{} - {}".format(student.name, score)
+
+	class Meta:
+		ordering = ('-date',)
+
 class Fee(models.Model):
 	student = models.ForeignKey(Student, on_delete = models.CASCADE)
-	date = models.DateField(default=timezone.now())
+	date = models.DateField(auto_now=True)
 	amount = models.IntegerField()
-	remarks = models.CharField(max_length=50, blank=True)
+	remarks = models.CharField(max_length=50, blank=True, null=True)
 
 	def __str__(self):
-		return "%d/%d, Rs.%d" % (self.date.month, self.date.year, self.amount)
+		return "{}/{}, Rs.{}".format(self.date.month, self.date.year, self.amount)
+
+	class Meta:
+		ordering = ('-date',)

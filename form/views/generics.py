@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import (
 	View,
 	DetailView,
@@ -6,6 +8,7 @@ from django.views.generic import (
 	CreateView,
 	UpdateView,
 	DeleteView,
+    TemplateView
 )
 
 from form.mixins import LoginRequiredMixin
@@ -25,6 +28,9 @@ class Index(LoginRequiredMixin, View):
 		}
 
 		return render(request, 'form/index.html', context)
+
+class Success(TemplateView):
+    template_name = 'form/success.html'
 
 class StudentList(LoginRequiredMixin, ListView):
     model = models.Student
@@ -85,3 +91,132 @@ class StudentUpdate(LoginRequiredMixin, UpdateView):
             return forms.StudentUpdateForm
         else:
             return forms.StudentUpdateFormByCi
+
+class CourseAdd(LoginRequiredMixin, CreateView):
+    model = models.Course
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    form_class = forms.CourseAddForm
+    success_url = reverse_lazy('success')
+
+    def form_valid(self, form):
+        obj = form.save(commit = False)
+
+        student_id = self.kwargs['student_id']
+        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci = self.request.user)
+        obj.student = student
+
+        obj.save()
+        return super().form_valid(form)
+
+class CourseUpdate(LoginRequiredMixin, UpdateView):
+    model = models.Course
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    form_class = forms.CourseAddForm
+    success_url = reverse_lazy('success')
+
+    def get_object(self, *args, **kwargs):
+        course = super(CourseUpdate, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            if not course.student.ci == self.request.user:
+                raise Http404
+        return course
+
+class CourseDelete(LoginRequiredMixin, DeleteView):
+    model = models.Course
+    template_name = 'form/delete.html'
+    success_url = reverse_lazy('success')
+
+    def get_object(self, *args, **kwargs):
+        course = super(CourseDelete, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            if not course.student.ci == self.request.user:
+                raise Http404
+        return course
+
+class AchievementAdd(LoginRequiredMixin, CreateView):
+    model = models.Achievement
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    form_class = forms.AchievementAddForm
+    success_url = reverse_lazy('success')
+
+    def form_valid(self, form):
+        obj = form.save(commit = False)
+
+        student_id = self.kwargs['student_id']
+        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci = self.request.user)
+        obj.student = student
+
+        obj.save()
+        return super().form_valid(form)
+    
+class AchievementUpdate(LoginRequiredMixin, UpdateView):
+    model = models.Achievement
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    form_class = forms.AchievementAddForm
+    success_url = reverse_lazy('success')
+
+    def get_object(self, *args, **kwargs):
+        achievement = super(AchievementUpdate, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            if not achievement.student.ci == self.request.user:
+                raise Http404
+        return achievement
+
+class AchievementDelete(LoginRequiredMixin, DeleteView):
+    model = models.Achievement
+    template_name = 'form/delete.html'
+    success_url = reverse_lazy('success')
+
+    def get_object(self, *args, **kwargs):
+        achievement = super(AchievementDelete, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            if not achievement.student.ci == self.request.user:
+                raise Http404
+        return achievement
+
+class FeeAdd(LoginRequiredMixin, CreateView):
+    model = models.Fee
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    form_class = forms.FeeAddForm
+    success_url = reverse_lazy('success')
+
+    def form_valid(self, form):
+        obj = form.save(commit = False)
+
+        student_id = self.kwargs['student_id']
+        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci = self.request.user)
+        obj.student = student
+
+        obj.save()
+        return super().form_valid(form)
+    
+class FeeUpdate(LoginRequiredMixin, UpdateView):
+    model = models.Fee
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    form_class = forms.FeeAddForm
+    success_url = reverse_lazy('success')
+
+    def get_object(self, *args, **kwargs):
+        fee = super(FeeUpdate, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            if not fee.student.ci == self.request.user:
+                raise Http404
+        return fee
+
+class FeeDelete(LoginRequiredMixin, DeleteView):
+    model = models.Fee
+    template_name = 'form/delete.html'
+    success_url = reverse_lazy('success')
+
+    def get_object(self, *args, **kwargs):
+        fee = super(FeeDelete, self).get_object(*args, **kwargs)
+        if not self.request.user.is_superuser:
+            if not fee.student.ci == self.request.user:
+                raise Http404
+        return fee
