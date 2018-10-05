@@ -67,7 +67,7 @@ class Achievement(models.Model):
 	remarks = models.CharField(max_length = 500)
 
 	def __str__(self):
-		return "{} - {}".format(self.student.name, score)
+		return "{} - {}".format(self.student.name, self.score)
 
 	class Meta:
 		ordering = ('-date',)
