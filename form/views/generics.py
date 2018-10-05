@@ -57,9 +57,9 @@ class StudentList(LoginRequiredMixin, ListView):
         if name != '':
             students = students.filter(name__icontains = name)
         if ci != '':
-            pass
+            students = students.filter(ci__name__icontains = ci)
         if student_id != '':
-            pass
+            students = students.filter(student_id = student_id)
 
         return students
 
