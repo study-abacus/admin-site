@@ -36,7 +36,7 @@ class StudentList(LoginRequiredMixin, ListView):
     model = models.Student
     template_name = 'form/students.html'
     context_object_name = 'students'
-    paginate_by = 2
+    paginate_by = 20
 
     def get_context_data(self):
         context = super(StudentList, self).get_context_data()
