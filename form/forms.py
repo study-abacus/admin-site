@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+
 from form.conf import COURSES, CI
 from form.models import Student, Course, Achievement, Fee
 
@@ -23,6 +25,12 @@ class StudentUpdateForm(forms.ModelForm):
 			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(1990,2018)])
 		}
+
+	def __init__(self, *args, **kwargs):
+		super(StudentUpdateForm, self).__init__(*args, **kwargs)
+		if "ci" in self.fields:
+			users = User.objects.all().order_by('first_name', 'last_name')
+			self.fields['ci'].choices = [(user.pk, user.get_full_name()) for user in users]
 
 	def get_personal_fields(self):
 		personal = ("student_id", "name", "gender", "ci", "doe", "dob", "clas", "school", "adhaar", "address")
