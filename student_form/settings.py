@@ -16,9 +16,8 @@ SECRET_KEY = config('SECRET_KEY', default='')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = [
-		'study-abacus.herokuapp.com',
 		config('DB_HOST'),
-]
+] + [ host.strip() for host in config('ALLOWED_HOSTS').split(',') ]
 
 
 # Application definition

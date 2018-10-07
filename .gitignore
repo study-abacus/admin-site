@@ -91,3 +91,6 @@ db.sqlite3
 # IDE
 *.swp
 .vscode
+
+# Keys
+keys/
