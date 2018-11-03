@@ -3,11 +3,24 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 
-from form.conf import COURSES, CI, GENDER
+from form.conf import COURSES, GENDER
 
 # Create your models here.
 
-SORTED_CI = sorted(CI, key = lambda x: (x[1]))
+class CI(models.Model):
+	user = models.OneToOneField(User, on_delete = models.CASCADE, unique = True)
+	center_address = models.TextField(null=True)
+
+	@property
+	def first_name(self):
+		return self.user.first_name
+	
+	@property
+	def last_name(self):
+		return self.user.last_name
+
+	def __str__ (self):
+		return "{} {}".format(self.user.first_name, self.user.last_name)
 
 class Student(models.Model):
 
@@ -18,7 +31,7 @@ class Student(models.Model):
 	name = models.CharField(max_length=200)
 	gender = models.CharField(max_length=10, choices=GENDER)
 	# ci = models.CharField(max_length=200, choices=SORTED_CI)
-	ci = models.ForeignKey(User, on_delete = models.DO_NOTHING)
+	ci = models.ForeignKey(CI, on_delete = models.DO_NOTHING)
 
 	#optional
 	doe = models.DateField(null=True, blank=True, default = timezone.now)

@@ -1,5 +1,8 @@
 import inspect
 
+from django.views import View
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login, logout_then_login
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
@@ -71,3 +74,7 @@ class LoginRequiredMixin(AccessMixin):
             return self.handle_no_permission(request)
 
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name = 'dispatch')
+class IsAdminMixin(View):
+    pass

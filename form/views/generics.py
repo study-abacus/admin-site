@@ -1,6 +1,8 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
 from django.views.generic import (
 	View,
 	DetailView,
@@ -11,9 +13,14 @@ from django.views.generic import (
     TemplateView
 )
 
-from form.mixins import LoginRequiredMixin
-from form import models
-from form import forms
+from form.mixins import (
+    LoginRequiredMixin,
+    IsAdminMixin,
+)
+from form import (
+    models, 
+    forms,
+)
 
 from collections import defaultdict
 
@@ -59,7 +66,7 @@ class StudentList(LoginRequiredMixin, ListView):
         if name != '':
             students = students.filter(name__icontains = name)
         if ci != '':
-            students = students.filter(ci__first_name__icontains = ci)
+            students = students.filter(ci__user__first_name__icontains = ci)
         if student_id != '':
             students = students.filter(student_id = student_id)
 
@@ -222,3 +229,15 @@ class FeeDelete(LoginRequiredMixin, DeleteView):
             if not fee.student.ci == self.request.user:
                 raise Http404
         return fee
+
+class CIAdd(IsAdminMixin, LoginRequiredMixin, CreateView):
+    model = models.CI
+    template_name = 'form/ci_add_form.html'
+    form_class = forms.CIAddForm
+    success_url = reverse_lazy('ci_list')
+
+class CIList(IsAdminMixin, LoginRequiredMixin, ListView):
+    model = models.CI
+    template_name = 'form/cis.html'
+    context_object_name = 'cis'
+    paginate_by = 20

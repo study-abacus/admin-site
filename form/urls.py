@@ -17,6 +17,8 @@ urlpatterns = [
 	path('add_fee/<int:student_id>', views.FeeAdd.as_view(), name='add_fee'),
 	path('edit_fee/<int:pk>', views.FeeUpdate.as_view(), name='edit_fee'),
 	path('delete_fee/<int:pk>', views.FeeDelete.as_view(), name='delete_fee'),
+	path('cis/', views.CIList.as_view(), name = 'ci_list'),
+	path('add_ci/', views.CIAdd.as_view(), name = 'add_ci'),
 	path('success/', views.Success.as_view(), name='success'),
 
 	path('get/', views.get_student_list, name='get_student_list'),
