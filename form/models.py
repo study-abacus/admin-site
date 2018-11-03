@@ -7,9 +7,16 @@ from form.conf import COURSES, GENDER
 
 # Create your models here.
 
+class Centre(models.Model):
+	name = models.CharField(max_length = 100)
+	address = models.TextField(null = True)
+	ci = models.ForeignKey('CI', on_delete = models.CASCADE)
+
+	def __str__(self):
+		return self.name
+
 class CI(models.Model):
 	user = models.OneToOneField(User, on_delete = models.CASCADE, unique = True)
-	center_address = models.TextField(null=True)
 
 	@property
 	def first_name(self):

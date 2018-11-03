@@ -230,6 +230,11 @@ class FeeDelete(LoginRequiredMixin, DeleteView):
                 raise Http404
         return fee
 
+class CIDetail(IsAdminMixin, LoginRequiredMixin, DetailView):
+    model = models.CI
+    template_name = 'form/ci.html'
+    context_object_name = 'ci'
+
 class CIAdd(IsAdminMixin, LoginRequiredMixin, CreateView):
     model = models.CI
     template_name = 'form/ci_add_form.html'
@@ -241,3 +246,32 @@ class CIList(IsAdminMixin, LoginRequiredMixin, ListView):
     template_name = 'form/cis.html'
     context_object_name = 'cis'
     paginate_by = 20
+
+class CentreAdd(IsAdminMixin, LoginRequiredMixin, CreateView):
+    model = models.Centre
+    fields = ('name', 'address')
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    success_url = reverse_lazy('success')
+
+    def form_valid(self, form):
+        obj = form.save(commit = False)
+
+        ci_id = self.kwargs['ci_id']
+        ci = get_object_or_404(models.CI, pk = ci_id)
+        obj.ci = ci
+
+        obj.save()
+        return super().form_valid(form)
+
+class CentreUpdate(IsAdminMixin, LoginRequiredMixin, UpdateView):
+    model = models.Centre
+    fields = ('name', 'address')
+    template_name = 'form/generic_edit_form.html'
+    context_object_name = 'form'
+    success_url = reverse_lazy('success')
+
+class CentreDelete(IsAdminMixin, LoginRequiredMixin, DeleteView):
+    model = models.Centre
+    template_name = 'form/delete.html'
+    success_url = reverse_lazy('success')

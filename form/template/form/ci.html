@@ -1,0 +1,112 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<body>
+
+	<script type="text/javascript">
+
+		function openPopUp(url){
+			if (! window.focus) return true;
+			var href = url; //link 
+			var win = window.open(href, "Edit Popup", 'width=600,height=300, left=250,scrollbars=yes');
+			win.onload = function() {
+				win.onbeforeunload = function(){
+					location.reload(true); //will refresh page after popup close
+				}
+			}
+			return false;
+		}
+
+	</script>
+	
+	{% include 'form/navigation.html' %}
+
+	<main>
+		<div class="row" style="margin: 20px;">
+
+			<!--PERSONAL DETAILS-->
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+				<div class="row">
+					<div class="col-xs-6">
+						<h3>Personal Details</h3>
+					</div>
+					<div class="col-xs-3" style="padding-top: 10px;text-align: right;">
+						<a href="/form/edit_student/{{ student.pk }}" class="btn btn-success">EDIT</a>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="list-group">
+						  <li class="list-group-item row1">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">CI ID:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ ci.pk }}</span>
+								</div>
+							</div>	
+						  </li>
+						  <li class="list-group-item row2">
+						  	<div class="row">
+								<div class="col-xs-6">
+									<span class="info_header">CI NAME:</span>
+								</div>
+								<div class="col-xs-6">
+									<span class="info_value">{{ ci.first_name|upper }} {{ ci.last_name|upper }}</span>
+								</div>
+							</div>	
+						  </li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!--center details-->
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+
+				<div class="row">
+					<div class="col-xs-6">
+						<h3>Center Details</h3>
+					</div>
+					<div class="col-xs-6" style="padding-top: 10px;text-align: right;">
+						<button type="button" class="btn btn-success" onclick="openPopUp('{% url 'centre_add' ci_id=ci.pk %}')">ADD CENTRE</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<ul class="list-group" id="courses">
+							{% for centre in ci.centre_set.all %}
+							  <li class="list-group-item" id="course{{ course.id }}">
+							  	<div class="row">
+									<div class="col-xs-8">
+										<span class="course_name"><b>{{ centre.name|upper }}</b></span>
+										<p>
+											{{ centre.address|linebreaks }}
+										</p>
+									</div>
+									<div class="col-xs-2">
+										<button class="course_buttons" onclick="openPopUp('{% url 'edit_centre' pk=centre.pk %}')"><img src="{% static "img/edit.png" %} " class="course_button"></a>
+									</div>
+									<div class="col-xs-2">
+										<button class="course_buttons" onclick="openPopUp('{% url 'delete_centre' pk=centre.pk %}')"><img src="{% static "img/delete.png" %} " class="course_button"></button>
+									</div>
+								</div>	
+							  </li>
+						  	{% endfor %}
+						  
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</main>
+</body>
+
+{% endblock %}
