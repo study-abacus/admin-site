@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from form.conf import COURSES, CI
-from form.models import Student, Course, Achievement, Fee
+from form.models import Student, Course, Achievement, Fee, CI, Centre
 
 
 class LoginForm(forms.Form):
@@ -86,3 +86,35 @@ class FeeAddForm(forms.ModelForm):
 		widgets = {
 			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2020)])
 		}
+
+class CIAddForm(forms.ModelForm):
+	first_name = forms.CharField(max_length = 100)
+	last_name = forms.CharField(max_length = 100)
+	username = forms.CharField(max_length = 100)
+	password = forms.CharField(max_length = 100, widget = forms.PasswordInput())
+	centre_name = forms.CharField(max_length = 100)
+	centre_address = forms.CharField(widget = forms.Textarea())
+
+	class Meta:
+		model = CI
+		fields = '__all__'
+		exclude = ('user',)
+
+	def save(self, **kwargs):
+		ci = super().save(commit=False)
+
+		user = User.objects.create(
+			username=self.cleaned_data['username'], 
+			first_name=self.cleaned_data['first_name'], 
+			last_name=self.cleaned_data['last_name'])
+		user.set_password(self.cleaned_data['password'])
+		ci.user = user
+		ci.save()
+
+		centre = Centre.objects.create(
+			name = self.cleaned_data['name'],
+			address = self.cleaned_data['address'],
+			ci = ci
+		)
+
+		return ci

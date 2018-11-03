@@ -17,6 +17,12 @@ urlpatterns = [
 	path('add_fee/<int:student_id>', views.FeeAdd.as_view(), name='add_fee'),
 	path('edit_fee/<int:pk>', views.FeeUpdate.as_view(), name='edit_fee'),
 	path('delete_fee/<int:pk>', views.FeeDelete.as_view(), name='delete_fee'),
+	path('cis/', views.CIList.as_view(), name = 'ci_list'),
+	path('ci/<int:pk>', views.CIDetail.as_view(), name = 'ci'),
+	path('add_ci/', views.CIAdd.as_view(), name = 'add_ci'),
+	path('add_centre/<int:ci_id>', views.CentreAdd.as_view(), name = 'centre_add'),
+	path('edit_centre/<int:pk>', views.CentreUpdate.as_view(), name = 'edit_centre'),
+	path('delete_centre/<int:pk>', views.CentreDelete.as_view(), name = 'delete_centre'),
 	path('success/', views.Success.as_view(), name='success'),
 
 	path('get/', views.get_student_list, name='get_student_list'),
