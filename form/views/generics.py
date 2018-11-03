@@ -10,8 +10,9 @@ from django.views.generic import (
 	CreateView,
 	UpdateView,
 	DeleteView,
-    TemplateView
+    TemplateView,
 )
+from django.contrib.auth.views import PasswordChangeView
 
 from form.mixins import (
     LoginRequiredMixin,
@@ -275,3 +276,7 @@ class CentreDelete(IsAdminMixin, LoginRequiredMixin, DeleteView):
     model = models.Centre
     template_name = 'form/delete.html'
     success_url = reverse_lazy('success')
+
+class PasswordChange(PasswordChangeView):
+    template_name = 'form/password_change.html'
+    success_url = reverse_lazy('index')

@@ -23,6 +23,9 @@ urlpatterns = [
 	path('add_centre/<int:ci_id>', views.CentreAdd.as_view(), name = 'centre_add'),
 	path('edit_centre/<int:pk>', views.CentreUpdate.as_view(), name = 'edit_centre'),
 	path('delete_centre/<int:pk>', views.CentreDelete.as_view(), name = 'delete_centre'),
+
+	path('password_change/', views.PasswordChange.as_view(), name = 'password_change'),
+	
 	path('success/', views.Success.as_view(), name='success'),
 
 	path('get/', views.get_student_list, name='get_student_list'),
