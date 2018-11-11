@@ -48,7 +48,7 @@ class StudentList(LoginRequiredMixin, ListView):
 
     def get_context_data(self):
         context = super(StudentList, self).get_context_data()
-        context['search_form'] = forms.StudentSearch()
+        context['search_form'] = forms.StudentSearch(self.request.GET)
         return context
 
     def get_queryset(self):
