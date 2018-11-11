@@ -16,15 +16,15 @@ class StudentUpdateForm(forms.ModelForm):
 		fields = '__all__'
 		exclude = ('student_id',)
 		labels = {
-			'mobile_f' : 'Father\'s Mobile Number',
+			'mobile_f' : 'Mobile Number 1',
 			'doe' : 'Date of Enrollment',
 			'dob' : 'Date of Birth',
 			'clas' : 'Class',
-			'mobile_m' : 'Mother\'s Mobile Number',
+			'mobile_m' : 'Mobile Number 2',
 		}
 		widgets = {
 			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
-			'dob' : forms.SelectDateWidget(years=[y for y in range(1990,2018)])
+			'dob' : forms.SelectDateWidget(years=[y for y in range(2000,2018)])
 		}
 
 	def __init__(self, *args, **kwargs):
@@ -34,12 +34,17 @@ class StudentUpdateForm(forms.ModelForm):
 			self.fields['ci'].choices = [(user.pk, user.get_full_name()) for user in users]
 
 	def get_personal_fields(self):
-		personal = ("student_id", "name", "gender", "ci", "doe", "dob", "clas", "school", "adhaar", "address")
-		return [ field for field in self if field.name in personal ]
+		personal = ("student_id", "name", "father_name", "occupation_father", "mother_name", "occupation_mother", "address", "mobile_f", "mobile_m", "dob", "clas", "school", "ci", "doe", )
 
-	def get_parent_fields(self):
-		parent =  ("father_name", "occupation_father", "mobile_f", "mother_name", "mobile_m", "occupation_mother", "annual_income")
-		return [ field for field in self if field.name in parent ]
+		fields = []
+		for p in personal:
+			for field in self:
+				if field.name == p:
+					fields.append(field)
+
+		return fields
+
+		# return [ field for field in self if field.name in personal ]
 
 	def get_course_fields(self):
 		course =  ("course", "level")

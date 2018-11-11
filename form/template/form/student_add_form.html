@@ -104,25 +104,6 @@
 
 				<div class="row" style="margin-top: 20px"> 
 					<div class="col-xs-12">
-						<h3>Parents details</h3>
-					</div>
-				</div>
-
-				<div class="row" style="margin-top: 20px;">
-					{% for f in form.get_parent_fields %}
-
-							<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-								  <div class="form-group">
-								    <label for="{{ f.id_for_label }}">{{ f.label }}:</label>
-								    {{ f|addcss:"form-control" }}
-								  </div>
-							</div>
-
-					{% endfor %}
-				</div>
-
-				<div class="row" style="margin-top: 20px"> 
-					<div class="col-xs-12">
 						<h3>Course details</h3>
 					</div>
 				</div>
