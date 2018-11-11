@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from form.conf import COURSES, CI
 from form.models import Student, Course, Achievement, Fee, CI, Centre
@@ -103,18 +104,25 @@ class CIAddForm(forms.ModelForm):
 	def save(self, **kwargs):
 		ci = super().save(commit=False)
 
-		user = User.objects.create(
+		for field in self.visible_fields():
+			if field.name not in self.cleaned_data:
+				raise ValidationError(_('{} is required'.format(field.name)), code='invalid')
+
+		user = User(
 			username=self.cleaned_data['username'], 
 			first_name=self.cleaned_data['first_name'], 
 			last_name=self.cleaned_data['last_name'])
 		user.set_password(self.cleaned_data['password'])
+
+		centre = Centre(
+			name = self.cleaned_data['centre_name'],
+			address = self.cleaned_data['centre_address']
+		)
+
+		user.save()
 		ci.user = user
 		ci.save()
-
-		centre = Centre.objects.create(
-			name = self.cleaned_data['name'],
-			address = self.cleaned_data['address'],
-			ci = ci
-		)
+		centre.ci = ci
+		centre.save()
 
 		return ci
