@@ -34,7 +34,7 @@ class StudentUpdateForm(forms.ModelForm):
 			self.fields['ci'].choices = [(user.pk, user.get_full_name()) for user in users]
 
 	def get_personal_fields(self):
-		personal = ("student_id", "name", "father_name", "occupation_father", "mother_name", "occupation_mother", "address", "mobile_f", "mobile_m", "dob", "clas", "school", "ci", "doe", )
+		personal = ("student_id", "name", "gender", "father_name", "occupation_father", "mother_name", "occupation_mother", "address", "mobile_f", "mobile_m", "dob", "clas", "school", "ci", "doe", )
 
 		fields = []
 		for p in personal:
