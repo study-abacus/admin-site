@@ -94,7 +94,9 @@ class StudentUpdate(LoginRequiredMixin, UpdateView):
     model = models.Student
     template_name = 'form/student_edit.html'
     context_object_name = 'form'
-    success_url = '/'
+
+    def get_success_url(self):
+        return reverse_lazy('student', kwargs = {"pk" : self.get_object().pk})
 
     def get_form_class(self):
         if self.request.user.is_superuser:
