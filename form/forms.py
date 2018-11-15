@@ -30,8 +30,8 @@ class StudentUpdateForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(StudentUpdateForm, self).__init__(*args, **kwargs)
 		if "ci" in self.fields:
-			users = User.objects.all().order_by('first_name', 'last_name').exclude(first_name = '')
-			self.fields['ci'].choices = [(user.pk, user.get_full_name()) for user in users]
+			users = CI.objects.all().order_by('user__first_name', 'user__last_name').exclude(user__first_name = '')
+			self.fields['ci'].choices = [(ci.pk, ci.user.get_full_name()) for ci in users]
 
 	def get_personal_fields(self):
 		personal = ("student_id", "name", "gender", "father_name", "occupation_father", "mother_name", "occupation_mother", "address", "mobile_f", "mobile_m", "dob", "clas", "school", "ci", "doe", )
