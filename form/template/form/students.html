@@ -36,9 +36,9 @@
             <table class="table row">
                 <thead class="thead-dark">
                     <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">CI</th>
+                    <th scope="col"><a href="?sort=student_id&{% query_transform request 'sort' %}">ID</a></th>
+                    <th scope="col"><a href="?sort=name&{% query_transform request 'sort' %}">Name</a></th>
+                    <th scope="col"><a href="?sort=ci&{% query_transform request 'sort' %}">CI</a></th>
                     <th></th>
                     </tr>
                 </thead>

@@ -71,6 +71,15 @@ class StudentList(LoginRequiredMixin, ListView):
         if student_id != '':
             students = students.filter(student_id = student_id)
 
+        sort = '' if 'sort' not in kwargs else kwargs['sort']
+
+        if sort == 'name':
+            students = students.extra(select={"lower_name": "lower(name)"}).order_by('lower_name')
+        elif sort == 'ci':
+            students = students.order_by('ci__user__first_name', 'ci__user__last_name')
+        elif  sort == 'student_id':
+            students = students.order_by('student_id')
+
         return students
 
 class StudentDetail(LoginRequiredMixin, DetailView):
