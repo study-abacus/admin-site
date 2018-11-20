@@ -91,7 +91,7 @@ class StudentAdd(LoginRequiredMixin, CreateView):
     model = models.Student
     template_name = 'form/student_add_form.html'
     context_object_name = 'form'
-    success_url = '/'
+    success_url = reverse_lazy('add_student')
 
     def get_form_class(self):
         if self.request.user.is_superuser:
