@@ -11,6 +11,7 @@
 	    </div>
 	    <div class="collapse navbar-collapse" id="myNavbar">
 	      <ul class="nav navbar-nav navbar-right">
+					<li><a href="">Hello, {{ request.user.first_name }} {{ request.user.last_name }}</a></li>
 					{% if request.user.is_superuser %}
 					<li><a href="{% url 'ci_list' %}">All CIs</a></li>
 					<li><a href="{% url 'add_ci' %}">Add CI</a></li>
