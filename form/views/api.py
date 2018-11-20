@@ -18,7 +18,7 @@ def get_student_list(request):
 	if re.match('^[a-zA-Z0-9 ]+ ?$', query):
 		students = models.Student.objects.filter(
 			(Q(name__istartswith=query) | Q(student_id__startswith=query)) &
-			(Q(name__istartswith="") if request.user.is_superuser else Q(ci = request.user.id))
+			(Q(name__istartswith="") if request.user.is_superuser else Q(ci__user = request.user.id))
 		)[:10]
 		serializer = StudentSerializer(students, many = True)
 		return Response(serializer.data)

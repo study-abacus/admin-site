@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
@@ -29,7 +29,7 @@ import re
 
 class Index(LoginRequiredMixin, View):
 	def get(self, request):
-		students_count = models.Student.objects.count() if request.user.is_superuser else models.Student.objects.filter(ci = request.user.id).count()
+		students_count = models.Student.objects.count() if request.user.is_superuser else models.Student.objects.filter(ci__user = request.user.id).count()
 
 		context = {
 			"student_count": students_count
@@ -54,7 +54,7 @@ class StudentList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         students = super(StudentList, self).get_queryset()
         if not self.request.user.is_superuser:
-            students = students.filter(ci = self.request.user)
+            students = students.filter(ci = models.CI.objects.get(user=self.request.user))
 
         kwargs = self.request.GET
         name = '' if 'name' not in kwargs else kwargs['name']
@@ -91,13 +91,27 @@ class StudentAdd(LoginRequiredMixin, CreateView):
     model = models.Student
     template_name = 'form/student_add_form.html'
     context_object_name = 'form'
-    success_url = reverse_lazy('add_student')
+
+    def get_success_url(self):
+        return reverse_lazy('student', kwargs = {"pk" : self.object.pk})
 
     def get_form_class(self):
         if self.request.user.is_superuser:
             return forms.StudentAddForm
         else:
             return forms.StudentAddFormByCi
+
+    def form_valid(self, form):
+        if self.request.user.is_superuser:
+            return super(StudentAdd, self).form_valid(form)
+
+        obj, course = form.save(commit = False)
+        obj.ci = models.CI.objects.get(user = self.request.user)
+        obj.save()
+        course.save()
+        self.object = obj
+
+        return HttpResponseRedirect(self.get_success_url())
 
 class StudentUpdate(LoginRequiredMixin, UpdateView):
     model = models.Student

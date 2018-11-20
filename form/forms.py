@@ -33,22 +33,6 @@ class StudentUpdateForm(forms.ModelForm):
 			users = CI.objects.all().order_by('user__first_name', 'user__last_name').exclude(user__first_name = '')
 			self.fields['ci'].choices = [(ci.pk, ci.user.get_full_name()) for ci in users]
 
-	def save(self, commit = True):
-		obj = super(StudentUpdateForm, self).save(commit = False)
-
-		if self.is_valid():
-			course = Course(
-				student = obj,
-				course = self.cleaned_data['course'],
-				level = self.cleaned_data['level']
-			)
-
-		if commit:
-			obj.save()
-			course.save()
-
-		return obj
-
 	def get_personal_fields(self):
 		personal = ("student_id", "name", "gender", "father_name", "occupation_father", "mother_name", "occupation_mother", "address", "mobile_f", "mobile_m", "dob", "clas", "school", "ci", "doe", )
 
@@ -68,11 +52,29 @@ class StudentUpdateForm(forms.ModelForm):
 class StudentUpdateFormByCi(StudentUpdateForm):
 	StudentUpdateForm.Meta.exclude = ('ci',)
 
-
 class StudentAddForm(StudentUpdateForm):
 	StudentUpdateForm.Meta.exclude = None
 	course = forms.CharField(max_length=2, widget=forms.Select(choices=COURSES), label="Course")
 	level = forms.IntegerField(initial=1, label="Level")
+
+	def save(self, commit = True):
+		obj = super(StudentUpdateForm, self).save(commit = False)
+
+		print(self.cleaned_data)
+
+		if self.is_valid():
+			course = Course(
+				student = obj,
+				course = self.cleaned_data['course'],
+				level = self.cleaned_data['level']
+			)
+
+		if commit:
+			obj.save()
+			course.save()
+			return obj
+		else:
+			return obj, course
 
 
 class StudentAddFormByCi(StudentAddForm):
