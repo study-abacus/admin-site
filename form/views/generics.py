@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import (
 	View,
 	DetailView,
@@ -12,7 +13,6 @@ from django.views.generic import (
 	DeleteView,
     TemplateView,
 )
-from django.contrib.auth.views import PasswordChangeView
 
 from form.mixins import (
     LoginRequiredMixin,
@@ -44,7 +44,7 @@ class StudentList(LoginRequiredMixin, ListView):
     model = models.Student
     template_name = 'form/students.html'
     context_object_name = 'students'
-    paginate_by = 20
+    paginate_by = 50
 
     def get_context_data(self):
         context = super(StudentList, self).get_context_data()

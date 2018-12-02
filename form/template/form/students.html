@@ -33,7 +33,7 @@
                 </form>
             </div>
 
-            <table class="table row">
+            <table class="table row table-striped">
                 <thead class="thead-dark">
                     <tr>
                     <th scope="col"><a href="?sort=student_id&{% query_transform request 'sort' %}">ID</a></th>
@@ -46,7 +46,7 @@
                     {% for student in students %}
                         <tr>
                             <th scope="row">{{ student.student_id }}</th>
-                            <td>{{ student.name }}</td>
+                            <td>{{ student.name | upper }}</td>
                             <td>{{ student.ci.first_name }} {{ student.ci.last_name }}</td>
                             <td><a href="{% url 'student' pk=student.pk %}" class="btn btn-success">View</a></td>
                         </tr>
