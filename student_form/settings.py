@@ -25,6 +25,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'form.apps.FormConfig',
+    'api.apps.ApiConfig',
     
     'django.contrib.admin',
     'django.contrib.auth',

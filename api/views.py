@@ -1,5 +1,6 @@
 from rest_framework.generics import (
-    ListAPIView
+    ListAPIView,
+    CreateAPIView
 )
 
 from form import models
@@ -10,3 +11,6 @@ from api import serializer
 class CentreList(ListAPIView):
     queryset = models.Centre.objects.all()
     serializer_class = serializer.CenterSerializer
+
+class CreateContactQuery(CreateAPIView):
+    serializer_class = serializer.ContactQuerySerializer

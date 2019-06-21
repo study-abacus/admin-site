@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer
 
 from form import models
+from api import models as APImodels
+
+class ContactQuerySerializer(ModelSerializer):
+    class Meta:
+        model = APImodels.ContactQuery
+        fields = '__all__'
 
 class UserSerializer(ModelSerializer):
     class Meta:
