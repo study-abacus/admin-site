@@ -154,7 +154,7 @@ class CourseUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, *args, **kwargs):
         course = super(CourseUpdate, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if not course.student.ci == self.request.user:
+            if course.student.ci != self.request.user:
                 raise Http404
         return course
 
@@ -166,7 +166,7 @@ class CourseDelete(LoginRequiredMixin, DeleteView):
     def get_object(self, *args, **kwargs):
         course = super(CourseDelete, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if not course.student.ci == self.request.user:
+            if course.student.ci != self.request.user:
                 raise Http404
         return course
 
@@ -197,7 +197,7 @@ class AchievementUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, *args, **kwargs):
         achievement = super(AchievementUpdate, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if not achievement.student.ci == self.request.user:
+            if achievement.student.ci != self.request.user:
                 raise Http404
         return achievement
 
@@ -209,7 +209,7 @@ class AchievementDelete(LoginRequiredMixin, DeleteView):
     def get_object(self, *args, **kwargs):
         achievement = super(AchievementDelete, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if not achievement.student.ci == self.request.user:
+            if achievement.student.ci != self.request.user:
                 raise Http404
         return achievement
 
@@ -240,7 +240,7 @@ class FeeUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, *args, **kwargs):
         fee = super(FeeUpdate, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if not fee.student.ci == self.request.user:
+            if fee.student.ci != self.request.user:
                 raise Http404
         return fee
 
@@ -252,7 +252,7 @@ class FeeDelete(LoginRequiredMixin, DeleteView):
     def get_object(self, *args, **kwargs):
         fee = super(FeeDelete, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if not fee.student.ci == self.request.user:
+            if fee.student.ci != self.request.user:
                 raise Http404
         return fee
 
