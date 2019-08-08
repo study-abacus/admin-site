@@ -138,7 +138,7 @@ class CourseAdd(LoginRequiredMixin, CreateView):
         obj = form.save(commit = False)
 
         student_id = self.kwargs['student_id']
-        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci = self.request.user)
+        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci__user = self.request.user)
         obj.student = student
 
         obj.save()
@@ -154,7 +154,7 @@ class CourseUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, *args, **kwargs):
         course = super(CourseUpdate, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if course.student.ci != self.request.user:
+            if course.student.ci.user != self.request.user:
                 raise Http404
         return course
 
@@ -166,7 +166,7 @@ class CourseDelete(LoginRequiredMixin, DeleteView):
     def get_object(self, *args, **kwargs):
         course = super(CourseDelete, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if course.student.ci != self.request.user:
+            if course.student.ci.user != self.request.user:
                 raise Http404
         return course
 
@@ -181,7 +181,7 @@ class AchievementAdd(LoginRequiredMixin, CreateView):
         obj = form.save(commit = False)
 
         student_id = self.kwargs['student_id']
-        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci = self.request.user)
+        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci__user = self.request.user)
         obj.student = student
 
         obj.save()
@@ -197,7 +197,7 @@ class AchievementUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, *args, **kwargs):
         achievement = super(AchievementUpdate, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if achievement.student.ci != self.request.user:
+            if achievement.student.ci.user != self.request.user:
                 raise Http404
         return achievement
 
@@ -209,7 +209,7 @@ class AchievementDelete(LoginRequiredMixin, DeleteView):
     def get_object(self, *args, **kwargs):
         achievement = super(AchievementDelete, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if achievement.student.ci != self.request.user:
+            if achievement.student.ci.user != self.request.user:
                 raise Http404
         return achievement
 
@@ -224,7 +224,7 @@ class FeeAdd(LoginRequiredMixin, CreateView):
         obj = form.save(commit = False)
 
         student_id = self.kwargs['student_id']
-        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci = self.request.user)
+        student = get_object_or_404(models.Student, pk = student_id) if self.request.user.is_superuser else get_object_or_404(models.Student, pk = student_id, ci__user = self.request.user)
         obj.student = student
 
         obj.save()
@@ -240,7 +240,7 @@ class FeeUpdate(LoginRequiredMixin, UpdateView):
     def get_object(self, *args, **kwargs):
         fee = super(FeeUpdate, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if fee.student.ci != self.request.user:
+            if fee.student.ci.user != self.request.user:
                 raise Http404
         return fee
 
@@ -252,7 +252,7 @@ class FeeDelete(LoginRequiredMixin, DeleteView):
     def get_object(self, *args, **kwargs):
         fee = super(FeeDelete, self).get_object(*args, **kwargs)
         if not self.request.user.is_superuser:
-            if fee.student.ci != self.request.user:
+            if fee.student.ci.user != self.request.user:
                 raise Http404
         return fee
 
