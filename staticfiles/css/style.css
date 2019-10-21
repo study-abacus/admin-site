@@ -1,0 +1,68 @@
+#stu_count{
+	font-size: 25px;
+	background-color:#e1f5fe;
+	padding: 15px;
+	font-weight: 400;
+	border: 5px solid #b3e5fc;
+}
+a{
+	color: initial;
+}
+#search_list{
+	margin-top: 40px;
+	background-color: #cfd8dc;
+	width: 40%;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin-bottom: 40px;
+}
+.student_list{
+	text-align: left;
+}
+#form_content{
+	width: 90%;
+}
+
+#submit{
+	font-size: 24px;
+}
+#edit_button{
+	height: 50px;
+	width: 100px;
+}
+.info_header{
+	font-size: 14px;
+	padding-right: 10px;
+	
+}
+.info_value{
+	font-size: 14px;
+	
+}
+.details{
+	padding: 10px;
+}
+.row1{
+	background-color: #eceff1;
+}
+.row2{
+	background-color: #cfd8dc;
+}
+.course_name{
+	vertical-align:middle;
+}
+.course_button{
+	padding: 5px;
+	height: 30px;
+}
+.course_buttons{
+	border: none;
+	background-color: transparent;
+}
+@media(max-width: 769px)
+{
+	#form_content{
+		margin-left:20px;
+		width: 100% !important;
+	}
+}
