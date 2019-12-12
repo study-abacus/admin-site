@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 
-from form.conf import COURSES, GENDER
+from form.conf import COURSES, GENDER, MONTHS, YEARS
 
 # Create your models here.
 
@@ -95,6 +95,8 @@ class Achievement(models.Model):
 class Fee(models.Model):
 	student = models.ForeignKey(Student, on_delete = models.CASCADE)
 	date = models.DateField(default = timezone.now)
+	fee_for_month = models.CharField(max_length = 256, choices = MONTHS, null = True, blank = False)
+	fee_for_year = models.CharField(max_length = 256, choices = YEARS, null = True, blank = False)
 	amount = models.IntegerField()
 	remarks = models.CharField(max_length=50, blank=True, null=True)
 

@@ -310,23 +310,29 @@
 								 <thead>
 							      <tr>
 							        <th>DATE</th>
+							        <th>FEE for DATE</th>
 							        <th>AMOUNT</th>
 							        <th>REMARKS</th>
 							        <th>ACTIONS</th>
 							      </tr>
 							    </thead>
 							    <tbody id="fees">
-							    {% for fee in student.fee_set.all %}
-									<tr id="fee{{ fee.id }}">
-										<td>{{ fee.date }}</td>
-										<td>Rs.{{ fee.amount }}</td>
-										<td>{{ fee.remarks }}</td>
-										<td>
-												<button class="course_buttons" onclick="openPopUp('{% url 'edit_fee' pk=fee.pk %}')"><img src="{% static "img/edit.png" %} " class="course_button"></button>
-												<button class="course_buttons" onclick="openPopUp('{% url 'delete_fee' pk=fee.pk %}')"><img src="{% static "img/delete.png" %} " class="course_button"></button>
-										</td>
-									</tr>
-								{% endfor %}
+										{% for fee in student.fee_set.all %}
+											<tr id="fee{{ fee.id }}">
+												<td>{{ fee.date }}</td>
+												<td>
+													{% if fee.fee_for_month %}
+														{{ fee.get_fee_for_month_display }} {{ fee.fee_for_year }}
+													{% endif %}
+												</td>
+												<td>Rs.{{ fee.amount }}</td>
+												<td>{{ fee.remarks }}</td>
+												<td>
+														<button class="course_buttons" onclick="openPopUp('{% url 'edit_fee' pk=fee.pk %}')"><img src="{% static "img/edit.png" %} " class="course_button"></button>
+														<button class="course_buttons" onclick="openPopUp('{% url 'delete_fee' pk=fee.pk %}')"><img src="{% static "img/delete.png" %} " class="course_button"></button>
+												</td>
+											</tr>
+										{% endfor %}
 							    </tbody>
 							</table>
 						</div>

@@ -97,7 +97,7 @@ class AchievementAddForm(forms.ModelForm):
 		fields = '__all__'
 		exclude = ('student',)
 		widgets = {
-			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2020)])
+			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2021)])
 		}
 
 class FeeAddForm(forms.ModelForm):
@@ -106,7 +106,7 @@ class FeeAddForm(forms.ModelForm):
 		fields = '__all__'
 		exclude = ('student',)
 		widgets = {
-			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2020)])
+			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2021)])
 		}
 
 class CIAddForm(forms.ModelForm):
