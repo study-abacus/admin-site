@@ -23,7 +23,7 @@ class StudentUpdateForm(forms.ModelForm):
 			'mobile_m' : 'Mobile Number 2',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2020)]),
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2022)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(2000,2018)])
 		}
 
