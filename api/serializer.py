@@ -31,5 +31,5 @@ class CenterSerializer(ModelSerializer):
 
 class ExamSerializer(ModelSerializer):
     class Meta:
-        model = models.Exams
+        model = APImodels.Exams
         fields = '__all__'
