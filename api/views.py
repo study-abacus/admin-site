@@ -1,6 +1,7 @@
 from rest_framework.generics import (
     ListAPIView,
-    CreateAPIView
+    CreateAPIView,
+    RetrieveAPIView
 )
 
 from form import models
@@ -19,3 +20,8 @@ class CreateContactQuery(CreateAPIView):
 class ExamsList(ListAPIView):
     queryset = APIModels.Exams.objects.all()
     serializer_class = serializer.ExamSerializer
+
+class ExamsDetail(RetrieveAPIView):
+    queryset = APIModels.Exams.objects.all()
+    serializer_class = serializer.ExamSerializer
+    lookup_field = 'slug'
