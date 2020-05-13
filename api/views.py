@@ -18,4 +18,4 @@ class CreateContactQuery(CreateAPIView):
 
 class ExamsList(ListAPIView):
     queryset = APIModels.Exams.objects.all()
-    serializer_class = serializers.ExamSerializer
+    serializer_class = serializer.ExamSerializer
