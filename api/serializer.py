@@ -28,3 +28,8 @@ class CenterSerializer(ModelSerializer):
     class Meta:
         model = models.Centre
         exclude = ('id',)
+
+class ExamSerializer(ModelSerializer):
+    class Meta:
+        model = models.Exams
+        fields = '__all__'

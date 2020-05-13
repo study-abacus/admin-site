@@ -14,3 +14,7 @@ class CentreList(ListAPIView):
 
 class CreateContactQuery(CreateAPIView):
     serializer_class = serializer.ContactQuerySerializer
+
+class ExamsList(ListAPIView):
+    queryset = models.Exams.objects.all()
+    serializer_class = serializers.ExamSerializer
