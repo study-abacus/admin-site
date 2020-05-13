@@ -9,3 +9,6 @@ class ContactQuery(models.Model):
 class Exams(models.Model):
   slug = models.SlugField(unique = True)
   form_embed_link = models.CharField(max_length = 1024)
+
+  def __str__ (self):
+    return self.slug
