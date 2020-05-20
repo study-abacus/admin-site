@@ -83,9 +83,15 @@ class StudentList(LoginRequiredMixin, ListView):
         return students
 
 class StudentDetail(LoginRequiredMixin, DetailView):
-    model = models.Student
     template_name = 'form/student.html'
     context_object_name = 'student'
+
+    def get_queryset(self):
+        students = super(StudentList, self).get_queryset()
+        if not self.request.user.is_superuser:
+            students = students.filter(ci = models.CI.objects.get(user=self.request.user))
+
+        return students
 
 class StudentAdd(LoginRequiredMixin, CreateView):
     model = models.Student
