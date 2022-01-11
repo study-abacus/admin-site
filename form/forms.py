@@ -23,8 +23,8 @@ class StudentUpdateForm(forms.ModelForm):
 			'mobile_m' : 'Mobile Number 2',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2022)]),
-			'dob' : forms.SelectDateWidget(years=[y for y in range(2000,2018)])
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2024)]),
+			'dob' : forms.SelectDateWidget(years=[y for y in range(2000,2020)])
 		}
 
 	def __init__(self, *args, **kwargs):
