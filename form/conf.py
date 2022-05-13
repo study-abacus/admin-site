@@ -14,7 +14,7 @@ MONTHS = (
 )
 
 YEARS = [
-	(str(y), str(y)) for y in range(2019, 2022)
+	(str(y), str(y)) for y in range(2019, 2024)
 ]
 
 COURSES = (
