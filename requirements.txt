@@ -5,7 +5,7 @@ bleach==3.0.2
 certifi==2018.8.24
 cffi==1.11.5
 chardet==3.0.4
-cryptography==2.3.1
+cryptography==39.0.1
 decorator==4.3.0
 defusedxml==0.5.0
 dj-database-url==0.5.0
