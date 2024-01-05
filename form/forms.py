@@ -23,7 +23,7 @@ class StudentUpdateForm(forms.ModelForm):
 			'mobile_m' : 'Mobile Number 2',
 		}
 		widgets = {
-			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2024)]),
+			'doe' : forms.SelectDateWidget(years=[y for y in range(2016,2026)]),
 			'dob' : forms.SelectDateWidget(years=[y for y in range(2000,2020)])
 		}
 
@@ -97,7 +97,7 @@ class AchievementAddForm(forms.ModelForm):
 		fields = '__all__'
 		exclude = ('student',)
 		widgets = {
-			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2024)])
+			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2026)])
 		}
 
 class FeeAddForm(forms.ModelForm):
@@ -106,7 +106,7 @@ class FeeAddForm(forms.ModelForm):
 		fields = '__all__'
 		exclude = ('student',)
 		widgets = {
-			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2024)])
+			'date' : forms.SelectDateWidget(years=[y for y in range(2016,2026)])
 		}
 
 class CIAddForm(forms.ModelForm):
